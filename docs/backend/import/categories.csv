@@ -1,0 +1,15 @@
+﻿Title,Type,CatId,Sub,SubShort,Parent,SortOrder,Hue,Active
+オフィシャル,tier,official,審査済み。全社での利用が承認された成果物,,,1,,yes
+インディーズ,tier,indie,審査なし。だれでもすぐに公開でき、気軽に試せる成果物,,,2,,yes
+ツール,kind,tool,,,,1,,yes
+表計算,shelf,spreadsheet,,,tool,1,150,yes
+自動化,shelf,automation,,,tool,2,212,yes
+プロンプト・スキル,shelf,prompt,,,tool,3,268,yes
+閲覧・可視化,shelf,viewer,,,tool,4,190,yes
+素材,kind,material,,,,2,,yes
+デザイン仕様書,shelf,design-spec,,,material,1,232,yes
+資料のひな形,shelf,template,,,material,2,28,yes
+図・アイコン,shelf,image,,,material,3,330,yes
+サンプルデータ,shelf,data,,,material,4,45,yes
+定番,signal,standard,長い期間にわたって、多くの部門で入手されている成果物,多くの部門が入手,,1,,yes
+人気上昇中,signal,rising,過去30日間に入手が増えている成果物,過去30日間で入手が増加,,2,,yes

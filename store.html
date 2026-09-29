@@ -1,0 +1,2585 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>成果物のストア</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="社内のツールと素材を公開・入手できるストアです。オフィシャル（審査済み）とインディーズ（審査なし）の2つの区分があります。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF; --bg-side:#F2F2F7; --surface:#FFFFFF; --tile:#F2F2F7;
+  --fill:rgba(120,120,128,.12); --fill-2:rgba(120,120,128,.20); --fill-half:rgba(120,120,128,.06);
+  --sep:rgba(60,60,67,.29); --label:rgba(0,0,0,.9); --label-2:#6E6E73;
+  --accent:#007AFF; --on-accent:#FFFFFF; --focus:rgba(0,122,255,.35);
+  --bar:rgba(255,255,255,.8); --band:rgba(255,255,255,.92);
+  --shadow:0 8px 20px rgba(0,0,0,.12); --shadow-hover:0 12px 28px rgba(0,0,0,.16); --ring:none;
+  --shadow-float:0 24px 60px rgba(0,0,0,.28); --shadow-toast:0 8px 24px rgba(0,0,0,.18); --shadow-paper:0 8px 20px rgba(0,0,0,.12); --shadow-art:0 12px 28px rgba(0,0,0,.28); --shadow-knob:0 2px 6px rgba(0,0,0,.2);
+  --seg-thumb:#FFFFFF; --seg-shadow:0 1px 3px rgba(0,0,0,.12);
+  --paper-s:55%; --paper-l:93%; --paper-ink-s:60%; --paper-ink-l:30%; --board-l:94%; --board-s:55%;
+  --t-large:34px; --lh-large:40px; --t-1:28px; --lh-1:34px; --t-2:22px; --lh-2:28px;
+  --t-head:17px; --lh-head:22px; --t-body:15px; --lh-body:24px; --t-sub:13px; --lh-sub:18px; --t-cap:11px; --lh-cap:13px;
+  --r-card:16px; --r-img:12px; --r-box:10px; --r-chip:8px;
+  --gutter:24px; --side:220px; --tab-h:49px; --tab-total:calc(var(--tab-h) + env(safe-area-inset-bottom, 0px));
+  --font:"Inter","Noto Sans JP","Segoe UI Variable Text","Segoe UI","Yu Gothic UI",system-ui,sans-serif;
+  --dur:120ms; --dur-2:200ms;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#1C1C1E; --bg-side:#131315; --surface:#2C2C2E; --tile:#2C2C2E;
+    --fill:rgba(120,120,128,.24); --fill-2:rgba(120,120,128,.34); --fill-half:rgba(120,120,128,.12);
+    --sep:rgba(84,84,88,.65); --label:#FFFFFF; --label-2:rgba(235,235,245,.6);
+    --accent:#0A84FF; --focus:rgba(10,132,255,.45); --bar:rgba(28,28,30,.8); --band:rgba(44,44,46,.92);
+    --shadow:none; --shadow-hover:none; --ring:1px solid rgba(255,255,255,.08);
+    --shadow-float:none; --shadow-toast:none; --shadow-paper:none; --shadow-art:0 12px 28px rgba(0,0,0,.28); --shadow-knob:none;
+    --seg-thumb:#636366; --seg-shadow:none;
+    --paper-s:30%; --paper-l:24%; --paper-ink-s:70%; --paper-ink-l:75%; --board-l:22%; --board-s:30%;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#1C1C1E; --bg-side:#131315; --surface:#2C2C2E; --tile:#2C2C2E;
+  --fill:rgba(120,120,128,.24); --fill-2:rgba(120,120,128,.34); --fill-half:rgba(120,120,128,.12);
+  --sep:rgba(84,84,88,.65); --label:#FFFFFF; --label-2:rgba(235,235,245,.6);
+  --accent:#0A84FF; --focus:rgba(10,132,255,.45); --bar:rgba(28,28,30,.8); --band:rgba(44,44,46,.92);
+  --shadow:none; --shadow-hover:none; --ring:1px solid rgba(255,255,255,.08);
+  --shadow-float:none; --shadow-toast:none; --shadow-paper:none; --shadow-art:0 12px 28px rgba(0,0,0,.28); --shadow-knob:none;
+  --seg-thumb:#636366; --seg-shadow:none;
+  --paper-s:30%; --paper-l:24%; --paper-ink-s:70%; --paper-ink-l:75%; --board-l:22%; --board-s:30%;
+}
+@media (max-width:1023px){ :root{ --gutter:20px; } }
+@media (max-width:599px){ :root{ --gutter:16px; --t-large:28px; --lh-large:34px; } }
+
+/* ---------- base ---------- */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{ margin:0; background:var(--bg); color:var(--label); font-family:var(--font); font-size:var(--t-body); line-height:var(--lh-body); font-weight:400; font-variant-numeric:tabular-nums; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+a{ color:var(--accent); text-decoration:none; }
+button{ font:inherit; color:inherit; background:none; border:0; padding:0; margin:0; cursor:pointer; }
+input,select,textarea{ font:inherit; color:inherit; }
+h1,h2,h3,p{ margin:0; }
+ul{ margin:0; padding:0; list-style:none; }
+[hidden]{ display:none !important; }
+svg{ display:block; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.ell{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.ui{ width:16px; height:16px; flex:0 0 auto; }
+.cap{ font-size:var(--t-cap); line-height:var(--lh-cap); font-weight:700; letter-spacing:.06em; color:var(--label-2); }
+.sub{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); }
+.t2{ font-size:var(--t-2); line-height:var(--lh-2); font-weight:700; }
+.t1{ font-size:var(--t-1); line-height:var(--lh-1); font-weight:700; }
+.muted{ color:var(--label-2); }
+.ck{ display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+.ck svg{ width:12px; height:12px; }
+.only-narrow{ display:none; }
+/* 押せる物の当たり判定を 44 に広げる（見た目は変えない） */
+.pill,.chip,.bc a,.sec-h .more,.dhead .links a,.toggle,.dhead .maker,.desc-more{ position:relative; }
+.pill::before,.chip::before,.bc a::before,.sec-h .more::before,.dhead .links a::before,.toggle::before,.dhead .maker::before,.seg button::before,.desc-more::before{ content:""; position:absolute; left:0; right:0; top:50%; height:44px; transform:translateY(-50%); }
+
+/* ---------- app frame ---------- */
+.app{ display:grid; grid-template-columns:var(--side) 1fr; min-height:100vh; }
+.side{ position:sticky; top:0; height:100vh; background:var(--bg-side); border-right:1px solid var(--sep); display:flex; flex-direction:column; padding:16px 12px 12px; }
+.side .sq{ position:relative; margin:0 0 16px; }
+.sq input{ width:100%; height:36px; border:0; border-radius:var(--r-box); background:var(--fill); padding:0 12px 0 34px; color:var(--label); }
+.sq input::placeholder{ color:var(--label-2); }
+.sq > svg{ position:absolute; left:11px; top:10px; width:16px; height:16px; color:var(--label-2); pointer-events:none; }
+.sq input:focus-visible,.qbox input:focus-visible,.rvbar input:focus-visible,.refpick input:focus-visible{ outline:0; box-shadow:0 0 0 4px var(--focus); }
+.sq-list{ position:absolute; left:0; width:320px; top:40px; background:var(--surface); border:1px solid var(--sep); border-radius:var(--r-box); box-shadow:var(--shadow); z-index:30; overflow:hidden; }
+.sq-list button{ display:grid; grid-template-columns:28px minmax(0,1fr); gap:10px; align-items:center; width:100%; height:44px; padding:0 10px; text-align:left; }
+.sq-list button:hover,.sq-list button.on{ background:var(--fill-half); }
+.sq-list .row-mid{ display:block; min-width:0; }
+.sq-list .ell{ display:block; font-size:var(--t-body); line-height:20px; }
+.sq-list .sub{ display:block; line-height:16px; }
+.side .grp{ margin:0 0 20px; }
+.side .grp .cap{ display:block; padding:0 8px 6px; }
+.nav{ display:flex; align-items:center; gap:10px; height:32px; padding:0 8px; border-radius:var(--r-chip); color:var(--label); width:100%; text-align:left; }
+.nav svg{ width:18px; height:18px; color:var(--accent); flex:0 0 auto; }
+.nav:hover{ background:var(--fill-half); }
+.nav.on{ background:var(--accent); color:var(--on-accent); }
+.nav.on svg{ color:var(--on-accent); }
+.nav .n{ margin-left:auto; color:var(--label-2); font-size:var(--t-sub); }
+.nav.on .n{ color:rgba(255,255,255,.8); }
+.me{ margin-top:auto; display:flex; align-items:center; gap:10px; padding:8px; border-radius:var(--r-chip); width:100%; text-align:left; }
+.me:hover{ background:var(--fill-half); }
+.avatar{ width:28px; height:28px; border-radius:50%; background:var(--accent); color:#fff; display:grid; place-items:center; font-size:var(--t-sub); font-weight:700; flex:0 0 auto; }
+.me .ell{ font-size:var(--t-sub); line-height:var(--lh-sub); }
+.me .sub{ display:block; }
+.main{ min-width:0; }
+.wrap{ max-width:1200px; margin:0 auto; padding:0 var(--gutter) 64px; }
+.wrap.narrow{ max-width:none; margin:0; }
+.wrap.narrow > *{ max-width:932px; }
+.wrap.narrow > .bleed{ max-width:none; }
+
+/* sticky compact bar */
+.bar{ position:sticky; top:0; z-index:20; height:52px; margin-bottom:-52px; pointer-events:none; }
+.bar-in{ height:52px; display:flex; align-items:center; gap:12px; max-width:1200px; margin:0 auto; padding:0 var(--gutter); opacity:0; transform:translateY(6px); transition:opacity var(--dur),transform var(--dur); }
+.bar.is-compact{ pointer-events:auto; background:var(--bar); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); border-bottom:1px solid var(--sep); }
+.bar.is-compact .bar-in{ opacity:1; transform:none; transition-duration:var(--dur-2); }
+.bar-in .ttl{ font-size:var(--t-head); line-height:var(--lh-head); font-weight:700; }
+.bar-in .icon{ width:32px; height:32px; }
+.bar-in .row-act{ margin-left:auto; }
+
+/* page head */
+.page{ opacity:1; transition:opacity 160ms; }
+.page.out{ opacity:0; }
+.ph{ padding-top:24px; }
+.ph .eyebrow{ display:block; margin-bottom:2px; }
+.ph .large{ font-size:var(--t-large); line-height:var(--lh-large); font-weight:700; display:flex; align-items:flex-end; gap:12px; }
+.ph .large .n{ font-size:var(--t-head); line-height:var(--lh-head); font-weight:400; color:var(--label-2); padding-bottom:6px; white-space:nowrap; }
+.ph .large .pill{ margin-left:auto; align-self:center; display:none; }
+.ph .sub{ margin-top:4px; }
+.ph .sub button{ color:var(--accent); }
+.sentinel{ height:1px; }
+.ph.has-bc{ padding-top:16px; }
+.bc{ font-size:var(--t-sub); line-height:var(--lh-sub); margin-bottom:12px; display:flex; gap:6px; flex-wrap:wrap; }
+.bc .sep{ color:var(--label-2); }
+.bc .cur{ color:var(--label-2); }
+@media (max-width:599px){ .ph .large{ flex-wrap:wrap; row-gap:4px; } .ph .large > span:first-child{ flex:1 0 auto; min-width:0; } .ph .large .pill{ flex:0 0 auto; margin-left:auto; } }
+
+/* sections */
+.sec{ margin-top:48px; }
+.sec-h{ display:flex; align-items:flex-end; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+.sec-h .t2{ white-space:nowrap; }
+.sec-h .sub{ margin-bottom:2px; }
+.sec-h .more{ margin-left:auto; font-size:var(--t-body); white-space:nowrap; }
+.sec-h .arrows{ display:none; gap:8px; margin-left:auto; }
+.sec-h .more + .arrows{ margin-left:8px; }
+.sec-h .arrows button{ width:28px; height:28px; border-radius:50%; background:var(--fill); color:var(--label); display:grid; place-items:center; }
+.sec-h .arrows button:hover{ background:var(--fill-2); }
+.sec-h .arrows svg{ width:14px; height:14px; }
+.sec-h .arrows button:disabled{ opacity:.35; cursor:default; }
+@media (min-width:1024px){ .sec-h .arrows{ display:flex; } }
+@media (max-width:599px){ .sec-h .sub{ flex-basis:100%; order:5; margin-top:-8px; } }
+.foot{ margin-top:64px; padding-top:16px; border-top:1px solid var(--sep); font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); display:flex; gap:16px; flex-wrap:wrap; }
+
+/* ---------- icon ---------- */
+.icon{ border-radius:22%; overflow:hidden; flex:0 0 auto; width:64px; height:64px; background:var(--fill); }
+.icon.material .face{ fill:hsl(var(--h) var(--paper-s) var(--paper-l)); }
+.icon.material .frame{ fill:none; stroke:hsl(var(--h) var(--paper-ink-s) var(--paper-ink-l)); stroke-opacity:.25; stroke-width:1; }
+.icon.material use{ stroke:hsl(var(--h) var(--paper-ink-s) var(--paper-ink-l)); }
+.icon.tool use{ stroke:#fff; }
+.icon.ph{ background:var(--fill); }
+.icon-120{ width:120px; height:120px; }
+.icon-96{ width:96px; height:96px; }
+.icon-44{ width:44px; height:44px; }
+.icon-32{ width:32px; height:32px; }
+.icon-28{ width:28px; height:28px; }
+.shelf-ic{ width:28px; height:28px; border-radius:22%; display:grid; place-items:center; flex:0 0 auto; background:linear-gradient(135deg,hsl(var(--h) 72% var(--l)),hsl(calc(var(--h) + 18) 70% calc(var(--l) - 10%))); }
+.shelf-ic svg{ width:18px; height:18px; stroke:#fff; }
+
+/* ---------- row card (A) ---------- */
+.row{ position:relative; display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:16px; align-items:center; height:80px; padding:8px 16px; border-radius:var(--r-box); transition:background var(--dur),transform var(--dur); }
+.row:hover{ background:var(--fill-half); }
+.row:active{ transform:scale(.99); }
+.row-mid{ min-width:0; }
+.row-name{ display:flex; align-items:center; gap:8px; font-size:var(--t-head); line-height:var(--lh-head); }
+.row-name a{ color:var(--label); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.row-name a::after{ content:""; position:absolute; inset:0; border-radius:var(--r-box); }
+.row-name .ck{ flex:0 0 auto; }
+.row-tag{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.row-meta{ display:flex; gap:12px; font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); }
+.row-meta .ell{ flex:1 1 auto; }
+.row-meta .why{ flex:0 0 auto; margin-left:auto; white-space:nowrap; }
+.row-act{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:2px; }
+.rows .row + .row::before{ content:""; position:absolute; left:96px; right:16px; top:-1px; height:1px; background:var(--sep); }
+.rows .row:hover::before{ opacity:0; }
+.rows .row{ margin:0 -16px; }
+.rows .row-meta{ gap:0; }
+.rows .row-meta .ell{ flex:0 1 auto; }
+.rows .row-meta .why{ margin-left:0; }
+.rows .row-meta .ell:not(:empty) + .why::before{ content:" · "; white-space:pre; }
+.row.small{ height:64px; grid-template-columns:44px minmax(0,1fr); padding:8px 12px; }
+.row.small .icon{ width:44px; height:44px; }
+.row.small .row-name{ font-size:var(--t-body); line-height:20px; }
+.row .sub{ color:var(--label-2); }
+@media (max-width:599px){ .row{ gap:12px; } .row-meta .why{ display:none; } .row-name .ck .t{ display:none; } .shelf{ grid-auto-columns:calc(100% - 16px); } }
+
+/* pill */
+.pill{ height:28px; min-width:72px; padding:0 14px; border-radius:999px; background:var(--fill); color:var(--accent); font-size:var(--t-body); font-weight:700; line-height:28px; text-align:center; white-space:nowrap; display:inline-flex; align-items:center; justify-content:center; transition:background var(--dur),transform var(--dur); }
+.pill:hover{ background:var(--fill-2); }
+.pill:active{ transform:scale(.97); }
+.pill.state{ color:var(--label-2); color:color-mix(in srgb, var(--label) 72%, var(--fill)); pointer-events:none; }
+.pill.primary{ background:var(--accent); color:var(--on-accent); height:40px; min-width:120px; padding:0 20px; line-height:40px; }
+.pill.primary:hover{ filter:brightness(1.06); background:var(--accent); }
+.pill.primary.state{ background:var(--fill); color:var(--label-2); color:color-mix(in srgb, var(--label) 72%, var(--fill)); }
+.pill.big{ height:44px; line-height:44px; width:100%; }
+.pill.mid{ height:32px; line-height:32px; padding:0 16px; }
+.pill:disabled{ opacity:.45; cursor:default; }
+@media (max-width:599px){ .pill{ min-width:64px; padding:0 12px; } }
+.ring{ width:28px; height:28px; }
+.ring circle{ fill:none; stroke-width:2; }
+.ring .bg{ stroke:var(--sep); }
+.ring .fg{ stroke:var(--accent); stroke-dasharray:75.4; stroke-dashoffset:75.4; transform:rotate(-90deg); transform-origin:center; animation:ring 900ms linear forwards; }
+@keyframes ring{ to{ stroke-dashoffset:0; } }
+
+/* shelf: 3 rows x N columns, horizontal scroll */
+.shelf{ display:grid; grid-auto-flow:column; grid-template-rows:repeat(3,80px); grid-auto-columns:calc(100% - 24px); column-gap:20px; overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scrollbar-width:none; margin:0 calc(-1 * var(--gutter)); padding:0 var(--gutter); scroll-padding:0 var(--gutter); }
+.shelf::-webkit-scrollbar{ display:none; }
+.shelf .row{ scroll-snap-align:start; padding:8px 0; }
+.shelf .row:hover{ background:var(--fill-half); box-shadow:0 0 0 8px var(--fill-half); border-radius:4px; }
+.shelf .row:not(:nth-child(3n+1))::before{ content:""; position:absolute; left:80px; right:0; top:-1px; height:1px; background:var(--sep); }
+.shelf .row:hover::before{ opacity:0; }
+.shelf.short{ grid-template-rows:repeat(2,80px); }
+.shelf.one{ grid-template-rows:80px; }
+/* 本文の幅が 900 以上のときだけ 2 列（<1024 はサイドバー無し、≥1024 はサイドバー 220） */
+@media (min-width:940px) and (max-width:1023px), (min-width:1168px){ .shelf{ grid-auto-columns:calc((100% - 20px - 24px) / 2); } }
+@media (max-width:599px){ .shelf .row:not(:nth-child(3n+1))::before{ left:76px; } }
+
+/* ---------- Today card (B) ---------- */
+.today{ position:relative; display:block; height:400px; border-radius:var(--r-card); overflow:hidden; box-shadow:var(--shadow); border:var(--ring); color:#fff; transition:transform var(--dur-2),box-shadow var(--dur-2); }
+.today:hover{ transform:scale(1.015); box-shadow:var(--shadow-hover); }
+.today .scrim{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.28),transparent 60%); }
+.today .mark{ position:absolute; right:-70px; top:-50px; width:440px; height:440px; opacity:.10; pointer-events:none; }
+.today .mark svg{ width:100%; height:100%; stroke:#fff; }
+.today .txt{ position:absolute; left:20px; top:20px; right:20px; max-width:560px; word-break:auto-phrase; }
+.today .txt .cap{ color:rgba(255,255,255,.7); display:block; margin-bottom:6px; }
+.today .txt .t1{ color:#fff; }
+.today .txt .lead{ font-size:var(--t-head); line-height:var(--lh-head); color:rgba(255,255,255,.85); margin-top:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.today .stack{ position:absolute; right:48px; top:calc(50% - 36px); transform:translateY(-50%); display:flex; }
+.today .stack .icon{ width:140px; height:140px; box-shadow:var(--shadow-art); margin-left:-40px; }
+.today .stack .icon:first-child{ margin-left:0; }
+.today .stack .icon:nth-child(1){ transform:rotate(-8deg) translateY(10px); }
+.today .stack .icon:nth-child(3){ transform:rotate(8deg) translateY(10px); }
+.today .band{ position:absolute; left:0; right:0; bottom:0; height:72px; background:var(--band); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); color:var(--label); display:flex; align-items:center; gap:12px; padding:0 20px; }
+.today .band .row-name{ font-size:var(--t-body); }
+.today .band .more{ margin-left:auto; color:var(--accent); font-size:var(--t-body); white-space:nowrap; }
+@media (max-width:899px){ .today .stack .icon{ width:110px; height:110px; margin-left:-32px; } .today .stack{ right:32px; } }
+@media (min-width:600px) and (max-width:1263px){ .today .stack{ top:auto; bottom:112px; transform:none; } }
+@media (max-width:599px){ .today{ height:auto; aspect-ratio:4 / 5; } .today .stack{ right:20px; top:auto; bottom:100px; transform:none; } .today .stack .icon{ width:88px; height:88px; margin-left:-28px; } .today .txt{ left:20px; top:20px; right:20px; } .today .mark{ width:300px; height:300px; right:-50px; top:-40px; } }
+
+/* entrance tiles (E) */
+.tiles2{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.tile{ display:flex; align-items:center; gap:16px; height:96px; padding:0 20px; background:var(--tile); border:var(--ring); border-radius:var(--r-card); color:var(--label); transition:transform var(--dur-2),box-shadow var(--dur-2); }
+.tile:hover{ transform:scale(1.015); box-shadow:var(--shadow-hover); }
+.tile .tile-ic{ width:28px; height:28px; color:var(--accent); flex:0 0 auto; }
+.tile > span{ min-width:0; }
+.tile .t2{ display:block; }
+.tile .sub{ display:block; margin-top:2px; word-break:auto-phrase; }
+.tile .n{ margin-left:auto; color:var(--label-2); white-space:nowrap; font-size:var(--t-body); }
+@media (max-width:599px){ .tiles2{ grid-template-columns:1fr; } }
+
+/* shelf tiles (F) */
+.tiles8{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.stile{ display:flex; align-items:center; gap:12px; height:56px; padding:0 12px; border-radius:var(--r-box); background:var(--fill-half); color:var(--label); transition:background var(--dur); text-align:left; width:100%; }
+.stile:hover{ background:var(--fill); }
+.stile .txt{ display:flex; flex-direction:column; min-width:0; flex:1 1 auto; }
+.stile .name{ font-size:var(--t-body); line-height:20px; }
+.stile .n{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); white-space:nowrap; }
+.stile .chev{ color:var(--label-2); width:14px; height:14px; margin-left:auto; }
+@media (min-width:1264px){ .tiles8{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media (max-width:599px){ .tiles8,.stiles{ grid-template-columns:1fr; } }
+
+/* collection (C) */
+.coll{ display:grid; grid-template-columns:320px minmax(0,1fr); height:220px; border-radius:var(--r-card); overflow:hidden; background:var(--surface); border:1px solid var(--sep); box-shadow:var(--shadow); transition:transform var(--dur-2),box-shadow var(--dur-2); }
+.coll:hover{ transform:scale(1.015); box-shadow:var(--shadow-hover); }
+.coll .face{ position:relative; color:#fff; padding:20px; display:flex; flex-direction:column; }
+.coll .face::before{ content:""; position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.3),transparent 60%); }
+.coll .face > *{ position:relative; }
+.coll .face .cap{ color:rgba(255,255,255,.7); }
+.coll .face .t2{ color:#fff; margin-top:auto; }
+.coll .face .sub{ color:rgba(255,255,255,.85); margin-top:4px; }
+.coll .face a::after{ content:""; position:absolute; inset:0; }
+.coll .list{ padding:8px 8px; display:grid; grid-template-rows:repeat(3,64px); align-content:center; }
+.coll .list .row.small::before{ display:none; }
+@media (max-width:767px){ .coll{ grid-template-columns:1fr; height:auto; } .coll .face{ height:140px; } }
+
+/* big card (D) */
+.bigcard{ display:block; color:var(--label); }
+.bigcard .cap{ color:var(--accent); display:block; }
+.bigcard .t2{ margin-top:4px; }
+.bigcard .lead{ font-size:var(--t-head); line-height:var(--lh-head); color:var(--label-2); margin-top:4px; }
+.bigcard .face{ position:relative; margin-top:16px; aspect-ratio:3 / 1; border-radius:var(--r-img); overflow:hidden; display:grid; place-items:center; box-shadow:var(--shadow); border:var(--ring); transition:transform var(--dur-2),box-shadow var(--dur-2); }
+.bigcard:hover .face{ transform:scale(1.015); box-shadow:var(--shadow-hover); }
+.bigcard .face .stack{ display:flex; gap:24px; }
+.bigcard .face .icon{ width:120px; height:120px; box-shadow:var(--shadow-art); }
+.bigcard .face .mark{ position:absolute; right:-60px; bottom:-80px; width:360px; height:360px; opacity:.10; pointer-events:none; }
+.bigcard .face .mark svg{ width:100%; height:100%; stroke:#fff; }
+@media (max-width:599px){ .bigcard .face{ aspect-ratio:4 / 3; } .bigcard .face .icon{ width:72px; height:72px; } .bigcard .face .stack{ gap:12px; } .bigcard .face .mark{ width:240px; height:240px; } }
+
+/* feature page face */
+.fface{ position:relative; height:280px; border-radius:var(--r-card); overflow:hidden; color:#fff; padding:24px; display:flex; flex-direction:column; justify-content:flex-end; box-shadow:var(--shadow); border:var(--ring); }
+.fface .scrim{ position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.32),transparent 60%); }
+.fface > *{ position:relative; }
+.fface .cap{ color:rgba(255,255,255,.7); }
+.fface .t1{ color:#fff; }
+.fface .lead{ font-size:var(--t-head); line-height:var(--lh-head); color:rgba(255,255,255,.85); margin-top:6px; }
+.fface .txt{ max-width:560px; word-break:auto-phrase; }
+.fface .stack{ position:absolute; right:40px; top:50%; transform:translateY(-50%); display:flex; }
+.fface .stack .icon{ box-shadow:var(--shadow-art); margin-left:-32px; }
+.fface .stack .icon:first-child{ margin-left:0; }
+.fface .stack .icon:nth-child(1){ transform:rotate(-8deg) translateY(10px); }
+.fface .stack .icon:nth-child(3){ transform:rotate(8deg) translateY(10px); }
+.fbody{ font-size:var(--t-head); line-height:28px; margin-top:24px; max-width:720px; }
+@media (max-width:767px){ .fface{ height:auto; min-height:280px; justify-content:flex-start; } .fface .stack{ position:static; transform:none; margin-top:24px; align-self:flex-end; } .fface .stack .icon{ width:72px; height:72px; margin-left:-20px; } }
+
+/* ---------- list page ---------- */
+.ctrl{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:20px; }
+.seg{ position:relative; display:grid; grid-auto-flow:column; grid-auto-columns:1fr; background:var(--fill); border-radius:var(--r-chip); padding:2px; height:32px; }
+.seg .thumb{ position:absolute; top:2px; bottom:2px; left:2px; width:calc((100% - 4px) / var(--n)); transform:translateX(calc(100% * var(--i))); background:var(--seg-thumb); border-radius:6px; box-shadow:var(--seg-shadow); transition:transform var(--dur-2); }
+.seg button{ position:relative; padding:0 14px; font-size:var(--t-sub); line-height:28px; font-weight:400; color:var(--label); white-space:nowrap; }
+.seg button.on{ font-weight:700; }
+.chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.chip{ height:32px; padding:0 12px; border-radius:var(--r-chip); background:var(--fill); font-size:var(--t-sub); line-height:32px; color:var(--label); white-space:nowrap; display:inline-flex; align-items:center; gap:6px; transition:background var(--dur); }
+.chip:hover{ background:var(--fill-2); }
+.chip.on{ background:var(--accent); color:var(--on-accent); }
+.chip svg{ width:12px; height:12px; }
+input.chip{ border:0; width:112px; }
+input.chip::placeholder{ color:var(--label-2); }
+.sortsel{ margin-left:auto; display:flex; align-items:center; gap:6px; font-size:var(--t-sub); color:var(--label-2); }
+.sortsel select{ appearance:none; -webkit-appearance:none; border:0; background:var(--fill); color:var(--label); height:32px; padding:0 28px 0 12px; border-radius:var(--r-chip); font-size:var(--t-sub); font-weight:700; }
+.sortsel .sel{ position:relative; }
+.sortsel .sel svg{ position:absolute; right:10px; top:50%; transform:translateY(-50%); width:12px; height:12px; pointer-events:none; color:var(--label); }
+.rows{ margin-top:24px; }
+.morebtn{ display:block; margin:16px auto 0; }
+.empty{ text-align:center; color:var(--label-2); padding:64px 0; }
+.empty .l1{ font-size:var(--t-head); line-height:var(--lh-head); }
+.empty .l2{ font-size:var(--t-sub); line-height:var(--lh-sub); margin-top:4px; }
+@media (max-width:1023px){ .sortsel select{ height:44px; } }
+
+/* ---------- detail ---------- */
+.dhead{ display:grid; grid-template-columns:120px minmax(0,1fr) auto; gap:0 20px; align-items:start; margin-top:8px; }
+.dhead .icon{ width:120px; height:120px; }
+.dhead .mid{ min-width:0; }
+.dhead .name{ font-size:var(--t-1); line-height:var(--lh-1); font-weight:700; }
+.dhead .tag{ font-size:var(--t-head); line-height:var(--lh-head); color:var(--label-2); margin-top:2px; }
+.dhead .maker{ font-size:var(--t-body); margin-top:6px; display:inline-block; }
+.dhead .right{ display:flex; flex-direction:column; align-items:flex-end; gap:6px; align-self:end; grid-row:1 / span 2; grid-column:3; }
+.dhead .right .row-act{ align-items:flex-end; gap:6px; }
+.dhead .links{ display:flex; gap:12px; font-size:var(--t-sub); line-height:var(--lh-sub); margin-top:6px; }
+.dhead .mid .links{ display:none; margin-top:8px; }
+.dhead .notebox{ grid-column:2; margin-top:20px; }
+.notebox{ background:var(--surface); border:1px solid var(--sep); border-radius:var(--r-box); padding:16px; max-width:640px; }
+.notebox .h{ font-size:var(--t-sub); line-height:var(--lh-sub); font-weight:700; }
+.notebox p{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); margin-top:4px; word-break:auto-phrase; }
+.notebox p.desc{ color:var(--label); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.meta{ display:flex; overflow-x:auto; scrollbar-width:none; margin:32px 0 0; padding:16px 0; border-top:1px solid var(--sep); border-bottom:1px solid var(--sep); }
+.meta::-webkit-scrollbar{ display:none; }
+.meta .m{ flex:1 1 0; min-width:max-content; padding:0 20px; border-right:1px solid var(--sep); display:flex; flex-direction:column; align-items:center; text-align:center; white-space:nowrap; }
+.meta .m:last-child{ border-right:0; }
+.meta .m .cap{ display:block; margin-bottom:4px; }
+.meta .m .v{ font-size:var(--t-2); line-height:var(--lh-2); font-weight:700; color:var(--label-2); }
+.meta .m .s{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); min-height:18px; }
+@media (min-width:1024px){ .meta .m{ padding:0 12px; } }
+@media (min-width:1024px) and (max-width:1167px){ .meta .m{ padding:0 8px; } }
+.boards{ display:flex; gap:16px; overflow-x:auto; scrollbar-width:none; margin:0 calc(-1 * var(--gutter)); padding:4px var(--gutter) 8px; scroll-snap-type:x mandatory; scroll-padding:0 var(--gutter); }
+.boards::-webkit-scrollbar{ display:none; }
+.board{ flex:0 0 384px; width:384px; height:240px; border-radius:var(--r-img); overflow:hidden; scroll-snap-align:start; position:relative; border:var(--ring); }
+.board.paper{ background:hsl(var(--h) var(--board-s) var(--board-l)); }
+.board .sheet-p{ position:absolute; left:48px; top:40px; right:48px; bottom:40px; background:var(--surface); border-radius:6px; box-shadow:var(--shadow-paper); border:var(--ring); padding:20px 24px; display:flex; flex-direction:column; }
+.board .sheet-p::after{ content:""; position:absolute; right:0; top:0; width:32px; height:32px; background:linear-gradient(225deg,hsl(var(--h) var(--board-s) var(--board-l)) 50%,var(--fill-2) 50%); border-bottom-left-radius:6px; }
+.board .ext{ font-size:var(--t-2); line-height:var(--lh-2); font-weight:700; color:hsl(var(--h) var(--paper-ink-s) var(--paper-ink-l)); }
+.board .fn{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); margin-top:auto; word-break:normal; overflow-wrap:anywhere; }
+.board .lines{ margin-top:16px; display:grid; gap:8px; }
+.board .lines i{ display:block; height:6px; border-radius:3px; background:var(--fill); }
+.board .lines i:nth-child(2){ width:70%; } .board .lines i:nth-child(3){ width:85%; }
+.board.browser .win{ position:absolute; left:48px; right:48px; top:32px; bottom:56px; background:var(--surface); border-radius:8px; box-shadow:var(--shadow-paper); border:var(--ring); overflow:hidden; display:flex; flex-direction:column; }
+.board.browser .tb{ height:28px; background:var(--fill); display:flex; align-items:center; gap:6px; padding:0 10px; }
+.board.browser .tb i{ width:8px; height:8px; border-radius:50%; background:var(--label-2); opacity:.5; }
+.board.browser .tb .url{ margin-left:8px; flex:1; height:14px; border-radius:7px; background:var(--surface); }
+.board.browser .body{ padding:16px; display:grid; gap:8px; align-content:start; flex:1; }
+.board.browser .body i{ display:block; height:8px; border-radius:4px; background:var(--fill); }
+.board.browser .body i:nth-child(1){ width:50%; height:12px; background:hsl(var(--h) 72% var(--l)); }
+.board.browser .body i:nth-child(3){ width:80%; } .board.browser .body i:nth-child(4){ width:60%; }
+.board.browser .fn{ position:absolute; left:24px; right:24px; bottom:20px; font-size:var(--t-sub); color:var(--label-2); text-align:center; }
+.board.folder .fd{ position:absolute; left:calc(50% - 100px); right:calc(50% - 100px); top:32px; bottom:56px; }
+.board.folder .fd .tab{ position:absolute; left:0; top:0; width:45%; height:22px; border-radius:8px 8px 0 0; background:hsl(var(--h) 72% var(--l)); }
+.board.folder .fd .bodyf{ position:absolute; left:0; right:0; top:14px; bottom:0; border-radius:0 10px 10px 10px; background:linear-gradient(180deg,hsl(var(--h) 72% calc(var(--l) + 8%)),hsl(var(--h) 72% var(--l))); box-shadow:var(--shadow-paper); }
+.board.folder .fn{ position:absolute; left:24px; right:24px; bottom:20px; text-align:center; font-size:var(--t-sub); color:var(--label-2); }
+.board.tagb{ color:#fff; padding:24px; }
+.board.tagb .txt{ position:relative; font-size:var(--t-2); line-height:var(--lh-2); font-weight:700; text-wrap:balance; word-break:auto-phrase; }
+.board.tagb .mark{ position:absolute; right:-24px; bottom:-24px; width:160px; height:160px; opacity:.2; }
+.board.tagb .mark svg{ width:160px; height:160px; stroke:#fff; }
+@media (max-width:599px){ .board{ flex-basis:calc(100% - 48px); width:auto; height:auto; aspect-ratio:16 / 10; } .board .sheet-p{ left:24px; right:24px; top:20px; bottom:20px; padding:16px 20px; } .board.browser .win{ left:32px; right:32px; top:24px; bottom:48px; } .board.folder .fd{ left:calc(50% - 84px); right:calc(50% - 84px); top:24px; bottom:48px; } .board.browser .fn,.board.folder .fn{ bottom:16px; } .board.tagb{ padding:20px; } .board.tagb .mark,.board.tagb .mark svg{ width:120px; height:120px; } }
+.dsec{ margin-top:40px; }
+.dsec > .t2{ margin-bottom:16px; }
+.desc{ font-size:var(--t-head); line-height:28px; max-width:720px; }
+.desc.clamp{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.desc-more{ font-size:var(--t-body); margin-top:4px; color:var(--accent); display:inline-block; }
+@media (max-width:1023px){ .unitsel select,.unitsel input{ height:44px; } }
+.checks{ background:var(--surface); border:1px solid var(--sep); border-radius:var(--r-box); padding:4px 16px; max-width:720px; }
+.chk{ display:flex; align-items:center; gap:12px; min-height:44px; padding:6px 0; font-size:var(--t-body); line-height:20px; }
+.chk + .chk{ border-top:1px solid var(--sep); }
+.chk .m{ width:16px; height:16px; flex:0 0 auto; }
+.chk .m.on{ color:var(--accent); }
+.chk .m.off{ border:1.5px solid var(--sep); border-radius:50%; }
+.chk .m svg{ width:16px; height:16px; }
+.info{ max-width:720px; border-top:1px solid var(--sep); }
+.info .ir{ display:grid; grid-template-columns:140px 1fr; gap:16px; min-height:44px; padding:10px 0; border-bottom:1px solid var(--sep); align-items:start; }
+.info .ir .k{ color:var(--label-2); font-size:var(--t-body); line-height:24px; }
+.info .ir .v{ font-size:var(--t-body); line-height:24px; }
+.info .ir .v ul li{ position:relative; padding-left:14px; }
+.info .ir .v ul li::before{ content:""; position:absolute; left:0; top:10px; width:5px; height:5px; border-radius:50%; background:var(--label-2); }
+.envchips{ display:flex; flex-wrap:wrap; gap:6px; }
+.envchips span{ height:24px; padding:0 8px; border-radius:6px; background:var(--fill); font-size:var(--t-sub); line-height:24px; }
+.rel{ max-width:720px; border-top:1px solid var(--sep); }
+.rel a{ display:flex; align-items:center; gap:12px; height:44px; border-bottom:1px solid var(--sep); color:var(--label); font-size:var(--t-body); }
+.rel a .ck{ margin-left:auto; }
+.fixbar{ display:none; }
+@media (max-width:1023px){
+  .dhead{ grid-template-columns:96px minmax(0,1fr); }
+  .dhead .icon{ width:96px; height:96px; }
+  .dhead .right{ display:none; }
+  .dhead .mid .links{ display:flex; }
+  .dhead .notebox{ grid-column:1 / -1; margin-top:24px; max-width:none; }
+  .meta{ margin:32px calc(-1 * var(--gutter)) 0; padding:12px var(--gutter); }
+  .wrap.narrow > .meta{ max-width:none; }
+  .meta .m{ flex:0 0 auto; min-width:112px; padding:0 16px; }
+  .fixbar{ position:fixed; left:0; right:0; bottom:var(--tab-total); height:56px; background:var(--bar); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); border-top:1px solid var(--sep); display:flex; align-items:center; gap:12px; padding:0 var(--gutter); z-index:15; }
+  .fixbar .lbl{ display:flex; flex-direction:column; gap:2px; min-width:0; font-size:var(--t-sub); line-height:var(--lh-sub); font-weight:700; }
+  .fixbar .lbl .cap{ font-size:var(--t-sub); line-height:var(--lh-sub); font-weight:400; letter-spacing:0; }
+  .fixbar .tier{ display:none; }
+  .bar.is-compact ~ .page .fixbar .tier{ display:block; }
+  .bar.is-compact ~ .page .fixbar .tier ~ .unit{ display:none; }
+  .bar-in .row-act{ display:none; }
+  .fixbar .row-act{ margin-left:auto; }
+  .fixbar .pill.primary{ height:44px; line-height:44px; }
+  body.has-fixbar .wrap{ padding-bottom:calc(56px + var(--tab-total) + 32px); }
+}
+@media (max-width:599px){
+  .dhead{ grid-template-columns:80px minmax(0,1fr); gap:0 16px; }
+  .dhead .icon{ width:80px; height:80px; }
+  .dhead .name{ font-size:var(--t-2); line-height:var(--lh-2); }
+  .info .ir{ grid-template-columns:1fr; gap:4px; }
+}
+
+/* ---------- search ---------- */
+.qbox{ position:relative; margin-top:16px; max-width:640px; }
+.qbox input{ width:100%; height:36px; border:0; border-radius:var(--r-box); background:var(--fill); padding:0 12px 0 36px; color:var(--label); }
+.qbox input::placeholder{ color:var(--label-2); }
+.qbox > svg{ position:absolute; left:12px; top:10px; width:16px; height:16px; color:var(--label-2); }
+.qres .n{ margin-top:24px; font-size:var(--t-head); color:var(--label-2); }
+
+/* ---------- publish ---------- */
+.pub{ display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:32px; margin-top:24px; align-items:start; }
+.pub .prev{ position:sticky; top:68px; }
+.pub .prev .cap{ display:block; margin-bottom:8px; }
+.pub .prev .rowbox{ background:var(--surface); border:1px solid var(--sep); border-radius:var(--r-card); padding:4px; }
+.pub .prev .path{ margin-top:8px; font-size:var(--t-sub); color:var(--label-2); }
+.grp{ margin-top:28px; }
+.grp > .cap{ display:block; margin-bottom:8px; padding:0 4px; }
+.grp .box{ background:var(--surface); border:1px solid var(--sep); border-radius:var(--r-box); overflow:hidden; }
+.frow{ display:grid; grid-template-columns:140px minmax(0,1fr); align-items:center; min-height:44px; padding:6px 16px; gap:12px; }
+.frow + .frow{ border-top:1px solid var(--sep); }
+.frow label{ font-size:var(--t-body); }
+.frow .seg{ max-width:320px; }
+.frow .in{ display:flex; align-items:center; gap:8px; min-width:0; }
+.frow input[type=text],.frow textarea,.frow input[type=number]{ width:100%; border:0; background:transparent; padding:6px 0; color:var(--label); font-size:var(--t-body); text-align:left; min-width:0; }
+.frow input:focus-visible,.frow textarea:focus-visible{ outline:0; box-shadow:inset 0 -2px 0 var(--accent); }
+.frow textarea{ resize:vertical; min-height:56px; }
+.frow input::placeholder,.frow textarea::placeholder{ color:var(--label-2); }
+.frow .cnt{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); white-space:nowrap; flex:0 0 auto; }
+.frow.stack{ grid-template-columns:1fr; }
+.frow .hint{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); }
+.stiles{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding:12px; }
+.stiles .stile{ background:var(--fill-half); border:1.5px solid transparent; }
+.stiles .stile.on{ border-color:var(--accent); background:var(--fill); }
+@media (max-width:599px){ .stiles{ grid-template-columns:1fr; } }
+@media (min-width:1024px) and (max-width:1167px){ .stiles{ grid-template-columns:1fr; } }
+.unitsel{ display:flex; gap:8px; align-items:center; }
+.unitsel input{ width:120px; background:var(--fill) !important; border-radius:6px; padding:0 10px !important; height:32px; }
+.unitsel select{ height:32px; border:0; border-radius:6px; background:var(--fill); color:var(--label); padding:0 10px; }
+.drop{ border:1.5px dashed var(--sep); border-radius:var(--r-box); padding:20px; text-align:center; color:var(--label-2); position:relative; margin:12px; word-break:auto-phrase; text-wrap:balance; }
+.drop input{ position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+.drop .fl{ margin-top:8px; color:var(--label); font-size:var(--t-sub); }
+.toggle{ position:relative; width:51px; height:31px; border-radius:999px; background:var(--fill-2); transition:background var(--dur-2); flex:0 0 auto; }
+.toggle::after{ content:""; position:absolute; left:2px; top:2px; width:27px; height:27px; border-radius:50%; background:#fff; box-shadow:var(--shadow-knob); transition:transform var(--dur-2); }
+.toggle.on{ background:var(--accent); }
+.toggle.on::after{ transform:translateX(20px); }
+.trow{ display:flex; align-items:center; gap:16px; padding:12px 16px; }
+.trow .t{ flex:1; }
+.trow .t .hint{ display:block; margin-top:2px; font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); word-break:auto-phrase; }
+.missing{ font-size:var(--t-sub); color:var(--label-2); margin:16px 4px 8px; }
+#p-submit{ margin-top:28px; }
+.missing:not([hidden]) + #p-submit{ margin-top:0; }
+.refpick{ position:relative; }
+.refpick input{ width:100%; height:32px; border:0; border-radius:6px; background:var(--fill); padding:0 10px; color:var(--label); }
+.refpick .sq-list{ top:36px; }
+.reflist{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+@media (max-width:1023px){ .pub{ grid-template-columns:1fr; } .pub .prev{ position:static; order:-1; } }
+@media (max-width:599px){ .frow{ grid-template-columns:1fr; gap:2px; padding:8px 16px; } .frow label{ font-size:var(--t-sub); line-height:var(--lh-sub); color:var(--label-2); } }
+
+/* ---------- review ---------- */
+.rv{ display:grid; grid-template-columns:360px minmax(0,1fr); gap:32px; margin-top:24px; align-items:start; }
+.rv .q .row.on{ background:var(--fill-half); }
+.rvmain{ min-width:0; }
+.rvmain > .wrap{ padding:0 0 48px; }
+.rvbar{ position:sticky; top:52px; z-index:10; height:64px; display:flex; align-items:center; gap:12px; background:var(--bar); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); border-bottom:1px solid var(--sep); margin:0 calc(-1 * var(--gutter)); padding:0 var(--gutter); }
+.rvbar .who{ font-size:var(--t-sub); font-weight:700; white-space:nowrap; }
+.rvbar input{ flex:1; min-width:120px; height:40px; border:0; border-radius:var(--r-box); background:var(--fill); padding:0 12px; color:var(--label); }
+.rvbar input::placeholder{ color:var(--label-2); }
+.rvbar .pill{ height:32px; line-height:32px; }
+.rvbar .pill.primary{ height:32px; line-height:32px; min-width:88px; }
+.tbl{ width:100%; border-collapse:collapse; font-size:var(--t-body); }
+.tbl th{ text-align:left; font-size:var(--t-cap); line-height:var(--lh-cap); letter-spacing:.06em; color:var(--label-2); font-weight:700; padding:8px 12px 8px 0; border-bottom:1px solid var(--sep); }
+.tbl td{ padding:10px 12px 10px 0; border-bottom:1px solid var(--sep); vertical-align:top; }
+.tbl td.dt{ white-space:nowrap; color:var(--label-2); }
+.tbl .tbl-ph{ display:none; }
+@media (max-width:1023px){ .rv{ grid-template-columns:1fr; } .rvbar{ position:fixed; top:auto; bottom:var(--tab-total); left:0; right:0; margin:0; border-top:1px solid var(--sep); border-bottom:0; z-index:15; height:64px; } .rvbar .who{ display:none; } .rvbar .pill,.rvbar .pill.primary{ height:44px; line-height:44px; } body.has-fixbar .wrap{ padding-bottom:calc(64px + var(--tab-total) + 32px); } }
+@media (max-width:599px){ .tbl thead{ display:none; } .tbl .dk{ display:none; } .tbl .tbl-ph{ display:block; } .tbl tr{ display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:12px; padding:8px 0; border-bottom:1px solid var(--sep); } .tbl td{ display:block; border:0; padding:0; } .tbl td.note{ grid-column:1 / -1; } }
+
+/* ---------- tabs (phone/tablet) ---------- */
+.tabs{ display:none; }
+@media (max-width:1023px){
+  .app{ grid-template-columns:1fr; }
+  .side{ display:none; }
+  .only-narrow{ display:block; }
+  .tabs{ position:fixed; left:0; right:0; bottom:0; min-height:var(--tab-total); background:var(--bar); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); border-top:1px solid var(--sep); display:grid; grid-template-columns:repeat(5,1fr); z-index:20; padding-bottom:env(safe-area-inset-bottom, 0px); }
+  .tabs a{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:var(--label-2); font-size:var(--t-cap); line-height:var(--lh-cap); font-weight:700; letter-spacing:.06em; height:var(--tab-h); }
+  .tabs a svg{ width:24px; height:24px; }
+  .tabs a.on{ color:var(--accent); }
+  .wrap{ padding-bottom:calc(var(--tab-total) + 48px); }
+  .ph .large .pill{ display:inline-flex; }
+}
+
+/* ---------- overlays ---------- */
+.toast{ position:fixed; top:16px; left:50%; transform:translateX(-50%); height:44px; padding:0 20px; border-radius:999px; background:var(--surface); box-shadow:var(--shadow-toast); border:var(--ring); display:flex; align-items:center; gap:8px; font-size:var(--t-body); z-index:50; white-space:nowrap; max-width:calc(100vw - 32px); }
+.toast svg{ width:16px; height:16px; color:var(--accent); flex:0 0 auto; }
+.toast .ell{ display:block; }
+.sheet-bg{ position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:40; display:grid; grid-template-columns:minmax(0,1fr); place-items:center; padding:16px; }
+.sheet{ width:420px; max-width:100%; background:var(--surface); border-radius:var(--r-card); padding:24px; box-shadow:var(--shadow-float); border:var(--ring); }
+.sheet .t2{ margin-bottom:8px; }
+.sheet p{ color:var(--label-2); font-size:var(--t-body); }
+.sheet .acts{ display:flex; gap:12px; margin-top:20px; justify-content:flex-end; }
+.sheet .acts .pill{ height:36px; line-height:36px; }
+.sheet .acts .pill.primary{ height:36px; line-height:36px; }
+.sheet .kv{ margin-top:12px; font-size:var(--t-body); }
+.sheet .kv div{ display:flex; gap:12px; padding:8px 0; border-top:1px solid var(--sep); }
+.sheet .kv div span:first-child,.sheet .kv div label:first-child{ color:var(--label-2); width:112px; flex:0 0 auto; }
+.sheet .kv div label:first-child{ align-self:center; }
+.sheet .kv .unitsel{ flex:1 1 auto; min-width:0; }
+.sheet .kv .unitsel select{ width:100%; max-width:100%; }
+.sheet .note{ margin-top:12px; font-size:var(--t-sub); line-height:var(--lh-sub); word-break:auto-phrase; }
+.sheet p,.sheet .kv span{ word-break:auto-phrase; }
+@media (max-width:599px){ .sheet .kv div{ flex-direction:column; gap:4px; } .sheet .kv div span:first-child,.sheet .kv div label:first-child{ width:auto; align-self:flex-start; font-size:var(--t-sub); line-height:var(--lh-sub); } .sheet .kv .unitsel{ width:100%; } }
+.frow .stackv{ display:flex; flex-direction:column; align-items:flex-start; gap:6px; min-width:0; padding:4px 0; }
+.frow .stackv .hint{ word-break:auto-phrase; }
+.sheet code{ font-family:ui-monospace,Menlo,Consolas,monospace; font-size:var(--t-sub); word-break:break-all; }
+
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{ transition:none !important; animation:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- shelf symbols: 24 grid, stroke 2.5, round -->
+  <symbol id="sym-spreadsheet" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></symbol>
+  <symbol id="sym-automation" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 3.5v5h-5"/></symbol>
+  <symbol id="sym-prompt" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5A2.5 2.5 0 0 1 7 3h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 15h-6.5L6 19v-4H7a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M12 6.5l.9 2.1 2.1.9-2.1.9L12 12.5l-.9-2.1L9 9.5l2.1-.9z"/></symbol>
+  <symbol id="sym-viewer" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20v-8M12 20V4M19 20v-6"/></symbol>
+  <symbol id="sym-design-spec" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h16"/><path d="M4 9h3M4 14h3M9 20v-3M14 20v-3"/><path d="M11 11h8v-8"/></symbol>
+  <symbol id="sym-template" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l5 5v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M9 12h6M9 16h6"/></symbol>
+  <symbol id="sym-image" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M3 17l5-5 4 4 3-3 6 6"/><circle cx="16" cy="8" r="1.5"/></symbol>
+  <symbol id="sym-data" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+  <!-- ui icons: 24 grid, stroke 2 -->
+  <symbol id="ui-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol>
+  <symbol id="ui-official" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.2 1.6 2.7-.3 1 2.5 2.5 1-.3 2.7L21.5 12l-1.4 2.2.3 2.7-2.5 1-1 2.5-2.7-.3L12 21.5l-2.2-1.6-2.7.3-1-2.5-2.5-1 .3-2.7L2.5 12l1.4-2.2-.3-2.7 2.5-1 1-2.5 2.7.3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="ui-indie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/><path d="M5 16l.6 1.4 1.4.6-1.4.6L5 20l-.6-1.4L3 18l1.4-.6z"/></symbol>
+  <symbol id="ui-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="ui-publish" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></symbol>
+  <symbol id="ui-mine" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+  <symbol id="ui-review" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 13l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="ui-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="ui-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="ui-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="ui-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></symbol>
+  <symbol id="ui-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="side" id="side"></aside>
+  <main class="main" id="main">
+    <div class="bar" id="bar"><div class="bar-in" id="bar-in"></div></div>
+    <div class="page" id="page"></div>
+  </main>
+</div>
+<nav class="tabs" id="tabs" aria-label="主な画面"></nav>
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sheet-bg" id="sheet" hidden></div>
+
+<script id="catalog" type="application/json">{
+ "generated": "2026-09-29",
+ "note": "架空のデモデータ。実在の組織・人・製品とは関係ない。",
+ "features": [
+  {
+   "id": "f-1",
+   "kind": "story",
+   "tier": "official",
+   "title": "画面のデザインをそろえる",
+   "lead": "仕様書を生成 AI に渡すだけで、どの画面も同じデザインになります。",
+   "body": "一覧画面・入力フォーム・詳細画面の3つの仕様書は、色・文字・余白を共通にしています。生成 AI に渡すと、仕様どおりの画面が作成されます。",
+   "items": [
+    "a-0003",
+    "a-0004",
+    "a-0012"
+   ],
+   "hue": 232
+  },
+  {
+   "id": "f-2",
+   "kind": "collection",
+   "tier": "official",
+   "title": "経理の月次作業を効率化",
+   "lead": "集計・請求書・勤務表の3つのツール",
+   "body": "月次集計は売上の一覧を貼り付けるだけ、請求書は PDF をフォルダに入れるだけ、勤務表はフォルダに集めるだけで処理できます。",
+   "items": [
+    "a-0001",
+    "a-0005",
+    "a-0010"
+   ],
+   "hue": 160
+  },
+  {
+   "id": "f-3",
+   "kind": "story",
+   "tier": "indie",
+   "title": "今週のインディーズ新着",
+   "lead": "審査なしで公開された成果物を、すぐに試せます。",
+   "body": "週報のたたき台、新様式の稟議書、設定画面の仕様書が公開されました。完成前のものも含まれます。",
+   "items": [
+    "a-0111",
+    "a-0103",
+    "a-0115"
+   ],
+   "hue": 24
+  },
+  {
+   "id": "f-4",
+   "kind": "collection",
+   "tier": "indie",
+   "title": "営業支援のツール集",
+   "lead": "営業支援（架空）で半年間使われているツール",
+   "body": "",
+   "items": [
+    "a-0102",
+    "a-0109",
+    "a-0110"
+   ],
+   "hue": 300
+  }
+ ],
+ "items": [
+  {
+   "id": "a-0001",
+   "name": "月次集計の計算表",
+   "summary": "売上の一覧を貼り付けるだけで、部門別・月別の集計とグラフを作成します。",
+   "tier": "official",
+   "kind": "tool",
+   "shelf": "spreadsheet",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "佐藤（架空）",
+    "org": "経理企画（架空）"
+   },
+   "version": "2.3",
+   "updated": "2026-09-12",
+   "environments": [
+    "Excel 2016以降",
+    "Excel for Web"
+   ],
+   "references": [],
+   "files": [
+    "monthly-summary.xlsx"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-08-20",
+    "note": "社内標準の集計として採用"
+   },
+   "signals": [
+    "standard"
+   ],
+   "description": "貼り付けた一覧を、月・部門・商品の3軸で集計します。グラフは自動で更新されます。マクロは使っていません。",
+   "features": [
+    "貼り付けるだけで3軸の集計",
+    "グラフは自動更新",
+    "マクロなし"
+   ],
+   "tagline": "売上を貼り付けるだけで月次集計"
+  },
+  {
+   "id": "a-0005",
+   "name": "請求書 PDF の読み取り",
+   "summary": "請求書の PDF から宛先・金額・期日を読み取り、表にまとめます。",
+   "tier": "official",
+   "kind": "tool",
+   "shelf": "automation",
+   "price": {
+    "type": "paid",
+    "amount": 5000,
+    "unit": "1部門あたり月額",
+    "revenue_dept": "D001"
+   },
+   "maker": {
+    "name": "高橋（架空）",
+    "org": "経理企画（架空）"
+   },
+   "version": "1.8",
+   "updated": "2026-08-30",
+   "environments": [
+    "Windows 11",
+    "Power Automate"
+   ],
+   "references": [],
+   "files": [
+    "invoice-reader.zip"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-08-15",
+    "note": "保守費用は利用部門の負担"
+   },
+   "signals": [
+    "standard"
+   ],
+   "description": "フォルダに入れた PDF を順に読み取り、1枚を1行とする表にまとめます。読み取れなかった行には印が付きます。",
+   "features": [
+    "フォルダに入れるだけ",
+    "読み取れない行に印",
+    "月1回の保守付き"
+   ],
+   "tagline": "請求書 PDF を一覧表に変換"
+  },
+  {
+   "id": "a-0006",
+   "name": "報告書の要約プロンプト",
+   "summary": "長い報告書を、決定事項・理由・次にやることの3段で要約します。",
+   "tier": "official",
+   "kind": "tool",
+   "shelf": "prompt",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "伊藤（架空）",
+    "org": "企画（架空）"
+   },
+   "version": "1.2",
+   "updated": "2026-09-18",
+   "environments": [
+    "Claude",
+    "ChatGPT",
+    "Copilot"
+   ],
+   "references": [],
+   "files": [
+    "summarize-report.md"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-09-19",
+    "note": ""
+   },
+   "signals": [
+    "rising"
+   ],
+   "description": "どの生成 AI でも同じ形式で要約が出るように、出力の形式を先に指定しています。",
+   "features": [
+    "3段の形式で出力",
+    "どの AI でも同じ形式",
+    "貼り付けて使うだけ"
+   ],
+   "tagline": "長い報告書を3段で要約"
+  },
+  {
+   "id": "a-0007",
+   "name": "会議の録音から議事録",
+   "summary": "録音ファイルから、決定事項・宿題・期限に分けた議事録の下書きを作成します。",
+   "tier": "official",
+   "kind": "tool",
+   "shelf": "automation",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "伊藤（架空）",
+    "org": "企画（架空）"
+   },
+   "version": "1.0",
+   "updated": "2026-09-22",
+   "environments": [
+    "Windows 11",
+    "Power Automate",
+    "Teams"
+   ],
+   "references": [
+    "a-0002"
+   ],
+   "files": [
+    "minutes-from-audio.zip"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-09-24",
+    "note": ""
+   },
+   "signals": [
+    "rising"
+   ],
+   "description": "Teams の録音を指定のフォルダに置くと、議事録のひな形に沿った下書きが届きます。",
+   "features": [
+    "録音を置くだけ",
+    "ひな形に沿った下書き",
+    "宿題の期限を抽出"
+   ],
+   "tagline": "録音から議事録の下書きを作成"
+  },
+  {
+   "id": "a-0008",
+   "name": "案件一覧の見える化",
+   "summary": "Excel の案件一覧を、進捗と担当者で色分けしたボードにまとめます。",
+   "tier": "official",
+   "kind": "tool",
+   "shelf": "viewer",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "山田（架空）",
+    "org": "業務システム（架空）"
+   },
+   "version": "3.1",
+   "updated": "2026-09-08",
+   "environments": [
+    "ブラウザ",
+    "Excel"
+   ],
+   "references": [
+    "a-0003"
+   ],
+   "files": [
+    "board.html",
+    "board-import.xlsx"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-07-30",
+    "note": ""
+   },
+   "signals": [
+    "standard"
+   ],
+   "description": "Excel の一覧をそのまま読み込み、進捗・担当者・期限で色分けして並べます。",
+   "features": [
+    "Excel をそのまま読み込み",
+    "進捗で色分け",
+    "期限の近い順に表示"
+   ],
+   "tagline": "案件一覧をボードで表示"
+  },
+  {
+   "id": "a-0009",
+   "name": "社内用語の言い換え辞書",
+   "summary": "社外向けの文章に含まれる社内用語を見つけ、言い換えの候補を示します。",
+   "tier": "official",
+   "kind": "tool",
+   "shelf": "prompt",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "加藤（架空）",
+    "org": "海外事業（架空）"
+   },
+   "version": "2.0",
+   "updated": "2026-08-11",
+   "environments": [
+    "Claude",
+    "ChatGPT",
+    "Word"
+   ],
+   "references": [],
+   "files": [
+    "glossary-rewrite.md",
+    "glossary.csv"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-08-12",
+    "note": ""
+   },
+   "signals": [],
+   "description": "貼り付けた文章の社内用語を強調表示し、社外の人にも通じる言い換えを3つずつ示します。",
+   "features": [
+    "社内用語を強調表示",
+    "言い換え候補を3つ",
+    "CSV で辞書を追加"
+   ],
+   "tagline": "社外向け文書の用語チェック"
+  },
+  {
+   "id": "a-0010",
+   "name": "勤務表の集計",
+   "summary": "各自の勤務表を1つのフォルダに集めると、部門ごとの集計と残業の警告を出します。",
+   "tier": "official",
+   "kind": "tool",
+   "shelf": "spreadsheet",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "佐藤（架空）",
+    "org": "経理企画（架空）"
+   },
+   "version": "1.6",
+   "updated": "2026-06-28",
+   "environments": [
+    "Excel 2016以降"
+   ],
+   "references": [
+    "a-0001"
+   ],
+   "files": [
+    "attendance-sum.xlsx"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-07-01",
+    "note": ""
+   },
+   "signals": [],
+   "description": "月次集計の計算表と同じ作りです。フォルダ内の勤務表をすべて読み込み、部門ごとにまとめます。",
+   "features": [
+    "フォルダ内をまとめて読み込み",
+    "残業の警告",
+    "月次集計と同じ操作"
+   ],
+   "tagline": "勤務表を集めるだけで部門別に集計"
+  },
+  {
+   "id": "a-0011",
+   "name": "定例会のダッシュボード",
+   "summary": "週次の定例会で確認する数字を、1画面にまとめて表示します。",
+   "tier": "official",
+   "kind": "tool",
+   "shelf": "viewer",
+   "price": {
+    "type": "paid",
+    "amount": 3000,
+    "unit": "1部門あたり月額",
+    "revenue_dept": "D003"
+   },
+   "maker": {
+    "name": "山田（架空）",
+    "org": "業務システム（架空）"
+   },
+   "version": "2.4",
+   "updated": "2026-09-01",
+   "environments": [
+    "ブラウザ",
+    "Power BI"
+   ],
+   "references": [
+    "a-0003",
+    "a-0008"
+   ],
+   "files": [
+    "weekly-dashboard.pbix"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-09-03",
+    "note": "保守費用は利用部門の負担"
+   },
+   "signals": [
+    "standard"
+   ],
+   "description": "数字の元データは共有フォルダの Excel です。毎週月曜の朝に自動で更新されます。",
+   "features": [
+    "毎週月曜の朝に自動更新",
+    "元データは Excel",
+    "部門ごとに切り替え"
+   ],
+   "tagline": "定例会の数字を1画面に集約"
+  },
+  {
+   "id": "a-0002",
+   "name": "議事録のひな形",
+   "summary": "決定事項・宿題・期限を別々の欄に書く議事録のひな形です。",
+   "tier": "official",
+   "kind": "material",
+   "shelf": "template",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "田中（架空）",
+    "org": "総務（架空）"
+   },
+   "version": "1.4",
+   "updated": "2026-07-03",
+   "environments": [
+    "Word",
+    "Google ドキュメント"
+   ],
+   "references": [],
+   "files": [
+    "minutes-template.docx"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-07-10",
+    "note": ""
+   },
+   "signals": [
+    "standard"
+   ],
+   "description": "会議の最後に「決定」「宿題」「期限」を読み上げるだけで議事録が完成する形にしています。",
+   "features": [
+    "決定・宿題・期限が別欄",
+    "読み上げるだけで完成",
+    "Word と Google ドキュメント"
+   ],
+   "tagline": "決定・宿題・期限の3欄構成"
+  },
+  {
+   "id": "a-0003",
+   "name": "デザイン仕様書 — 一覧画面",
+   "summary": "一覧・検索・並べ替えを備えた画面の HTML デザインを、マークダウンで記述した仕様書です。",
+   "tier": "official",
+   "kind": "material",
+   "shelf": "design-spec",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "鈴木（架空）",
+    "org": "業務システム（架空）"
+   },
+   "version": "3.0",
+   "updated": "2026-09-20",
+   "environments": [
+    "ブラウザ",
+    "Claude",
+    "ChatGPT"
+   ],
+   "references": [],
+   "files": [
+    "design-spec-list.md",
+    "design-spec-list.html"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-09-22",
+    "note": "社内の画面の標準として採用"
+   },
+   "signals": [
+    "rising",
+    "standard"
+   ],
+   "description": "生成 AI に渡すと、この仕様どおりの一覧画面を作成します。色・余白・文字の大きさは仕様書の中で定めています。",
+   "features": [
+    "AI に渡すだけで画面を作成",
+    "色・余白・文字を定義済み",
+    "一覧・検索・並べ替え"
+   ],
+   "tagline": "一覧画面のデザインを統一"
+  },
+  {
+   "id": "a-0004",
+   "name": "デザイン仕様書 — 入力フォーム",
+   "summary": "入力フォームの HTML デザイン仕様書です。必須項目の表示やエラーの出し方まで定めています。",
+   "tier": "official",
+   "kind": "material",
+   "shelf": "design-spec",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "鈴木（架空）",
+    "org": "業務システム（架空）"
+   },
+   "version": "2.1",
+   "updated": "2026-09-05",
+   "environments": [
+    "ブラウザ",
+    "Claude",
+    "ChatGPT"
+   ],
+   "references": [
+    "a-0003"
+   ],
+   "files": [
+    "design-spec-form.md"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-09-08",
+    "note": ""
+   },
+   "signals": [],
+   "description": "一覧画面の仕様書と同じ色と文字を使います。フォームの部品ごとに、通常・エラー・無効の3つの状態の見た目を定めています。",
+   "features": [
+    "必須項目とエラーの表示",
+    "部品ごとに3つの状態",
+    "一覧画面と同じ配色"
+   ],
+   "tagline": "迷わず入力できるフォームの型"
+  },
+  {
+   "id": "a-0012",
+   "name": "デザイン仕様書 — 詳細画面",
+   "summary": "1件の内容を表示する画面の仕様書です。見出し・情報表・操作ボタンの配置を定めています。",
+   "tier": "official",
+   "kind": "material",
+   "shelf": "design-spec",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "鈴木（架空）",
+    "org": "業務システム（架空）"
+   },
+   "version": "1.3",
+   "updated": "2026-09-15",
+   "environments": [
+    "ブラウザ",
+    "Claude",
+    "ChatGPT"
+   ],
+   "references": [
+    "a-0003"
+   ],
+   "files": [
+    "design-spec-detail.md"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-09-16",
+    "note": ""
+   },
+   "signals": [
+    "rising"
+   ],
+   "description": "一覧から開く詳細画面の型です。開いてすぐ見える範囲に何を置くかを定めています。",
+   "features": [
+    "最初に見える範囲の構成",
+    "情報表の型",
+    "操作ボタンの位置"
+   ],
+   "tagline": "詳細画面の構成を統一"
+  },
+  {
+   "id": "a-0013",
+   "name": "提案書のひな形（16:9）",
+   "summary": "課題・提案・効果・費用・体制の順で構成した提案書のひな形です。",
+   "tier": "official",
+   "kind": "material",
+   "shelf": "template",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "田中（架空）",
+    "org": "総務（架空）"
+   },
+   "version": "2.2",
+   "updated": "2026-05-19",
+   "environments": [
+    "PowerPoint",
+    "Google スライド"
+   ],
+   "references": [],
+   "files": [
+    "proposal-16x9.pptx"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-05-20",
+    "note": ""
+   },
+   "signals": [
+    "standard"
+   ],
+   "description": "章の順番と各章の1枚目の型が決まっています。色は会社の標準色です。",
+   "features": [
+    "章の順番を固定",
+    "各章の1枚目の型",
+    "会社の標準色"
+   ],
+   "tagline": "章立てが決まった提案書の型"
+  },
+  {
+   "id": "a-0014",
+   "name": "会社標準のアイコン120点",
+   "summary": "資料や画面で使える、線の太さをそろえたアイコンです。",
+   "tier": "official",
+   "kind": "material",
+   "shelf": "image",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "松本（架空）",
+    "org": "広報（架空）"
+   },
+   "version": "2.0",
+   "updated": "2026-08-01",
+   "environments": [
+    "PowerPoint",
+    "ブラウザ",
+    "Figma"
+   ],
+   "references": [
+    "a-0107"
+   ],
+   "files": [
+    "icons-120.zip"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-08-05",
+    "note": "広報が管理する標準セット"
+   },
+   "signals": [
+    "standard"
+   ],
+   "description": "SVG と PNG の両方が入っています。「アイコン40点（線画）」をもとに、120点に増やしたものです。",
+   "features": [
+    "SVG と PNG",
+    "線の太さを統一",
+    "標準色で着色したものも同梱"
+   ],
+   "tagline": "資料と画面で使える標準アイコン"
+  },
+  {
+   "id": "a-0015",
+   "name": "架空の取引データ 10万件",
+   "summary": "集計や画面のテストに使える、実在しない取引の一覧です。",
+   "tier": "official",
+   "kind": "material",
+   "shelf": "data",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "渡辺（架空）",
+    "org": "物流（架空）"
+   },
+   "version": "1.2",
+   "updated": "2026-07-22",
+   "environments": [
+    "Excel",
+    "CSV",
+    "SQL"
+   ],
+   "references": [
+    "a-0108"
+   ],
+   "files": [
+    "transactions-dummy.csv"
+   ],
+   "review": {
+    "status": "approved",
+    "by": "審査担当者",
+    "at": "2026-07-25",
+    "note": ""
+   },
+   "signals": [],
+   "description": "日付・部門・商品・金額の分布を実データに近づけています。名前や番号はすべて乱数です。",
+   "features": [
+    "10万件",
+    "実データに近い分布",
+    "CSV と SQL"
+   ],
+   "tagline": "実データに近いテスト用データ"
+  },
+  {
+   "id": "a-0101",
+   "name": "棚卸しの差分チェック",
+   "summary": "前回と今回の棚卸し表を比べて、増減だけを抜き出します。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "spreadsheet",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "渡辺（架空）",
+    "org": "物流（架空）"
+   },
+   "version": "0.3",
+   "updated": "2026-09-25",
+   "environments": [
+    "Excel 2019以降"
+   ],
+   "references": [
+    "a-0001"
+   ],
+   "files": [
+    "stock-diff.xlsx"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [
+    "rising"
+   ],
+   "description": "物流（架空）の倉庫で使っている表の形式に合わせています。列の並びが違うと動きません。",
+   "features": [
+    "増減だけを抽出",
+    "前回と今回を比較",
+    "物流（架空）の表の形式が前提"
+   ],
+   "tagline": "棚卸し表の前回比較"
+  },
+  {
+   "id": "a-0102",
+   "name": "会議の空き時間を探す",
+   "summary": "予定表から、参加者全員が空いている30分を見つけます。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "automation",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "中村（架空）",
+    "org": "営業支援（架空）"
+   },
+   "version": "1.0",
+   "updated": "2026-09-10",
+   "environments": [
+    "Power Automate",
+    "Outlook"
+   ],
+   "references": [],
+   "files": [
+    "find-slot.zip"
+   ],
+   "review": {
+    "status": "requested",
+    "at": "2026-09-26",
+    "note": ""
+   },
+   "signals": [],
+   "description": "営業支援（架空）で半年間使っています。",
+   "features": [
+    "全員の空き時間を検索",
+    "Outlook の予定表を参照",
+    "30分刻み"
+   ],
+   "tagline": "会議の日程調整を効率化"
+  },
+  {
+   "id": "a-0105",
+   "name": "英訳の下書きプロンプト",
+   "summary": "社内向けの日本語を、同じ丁寧さの英語に訳します。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "prompt",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "加藤（架空）",
+    "org": "海外事業（架空）"
+   },
+   "version": "1.1",
+   "updated": "2026-08-02",
+   "environments": [
+    "Claude",
+    "ChatGPT"
+   ],
+   "references": [],
+   "files": [
+    "translate-internal.md"
+   ],
+   "review": {
+    "status": "returned",
+    "by": "審査担当者",
+    "at": "2026-08-10",
+    "note": "固有名詞の扱いを説明に追記してから、再申請してください"
+   },
+   "signals": [],
+   "description": "元の日本語の丁寧さに合わせて訳します。固有名詞は訳さずに残します。",
+   "features": [
+    "元の丁寧さを維持",
+    "固有名詞は原文のまま",
+    "貼り付けるだけ"
+   ],
+   "tagline": "丁寧さを保ったまま英訳"
+  },
+  {
+   "id": "a-0106",
+   "name": "工程の進捗ボード",
+   "summary": "案件ごとの工程の進捗を、ブラウザの1画面に色分けして表示します。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "viewer",
+   "price": {
+    "type": "paid",
+    "amount": 1500,
+    "unit": "1人あたり月額",
+    "revenue_dept": "D009"
+   },
+   "maker": {
+    "name": "山本（架空）",
+    "org": "製造管理（架空）"
+   },
+   "version": "0.9",
+   "updated": "2026-09-15",
+   "environments": [
+    "ブラウザ"
+   ],
+   "references": [
+    "a-0003"
+   ],
+   "files": [
+    "progress-board.html"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "工程名は製造管理（架空）の工程に合わせています。工程名を書き換えると、ほかの部門でも使えます。",
+   "features": [
+    "工程を色分けして表示",
+    "HTML ファイル1つ",
+    "工程名は書き換え可能"
+   ],
+   "tagline": "案件ごとの工程を1画面で確認"
+  },
+  {
+   "id": "a-0109",
+   "name": "メールの下書き3案",
+   "summary": "用件を1行書くと、丁寧・普通・短めの3案の下書きを作成します。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "prompt",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "中村（架空）",
+    "org": "営業支援（架空）"
+   },
+   "version": "1.3",
+   "updated": "2026-09-19",
+   "environments": [
+    "Claude",
+    "ChatGPT",
+    "Copilot"
+   ],
+   "references": [],
+   "files": [
+    "mail-3drafts.md"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [
+    "rising"
+   ],
+   "description": "社外向けの言い回しは、営業支援（架空）の文例に合わせています。",
+   "features": [
+    "3案を同時に作成",
+    "丁寧・普通・短め",
+    "用件1行から"
+   ],
+   "tagline": "用件1行から下書きを3案"
+  },
+  {
+   "id": "a-0110",
+   "name": "名刺の写真から連絡先一覧",
+   "summary": "名刺の写真をフォルダに入れると、氏名・会社名・連絡先の一覧を作成します。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "automation",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "小川（架空）",
+    "org": "営業支援（架空）"
+   },
+   "version": "0.5",
+   "updated": "2026-09-03",
+   "environments": [
+    "Windows 11",
+    "Power Automate"
+   ],
+   "references": [
+    "a-0005"
+   ],
+   "files": [
+    "cards-to-list.zip"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "「請求書 PDF の読み取り」と同じ仕組みを使っています。読み取れない名刺は写真のまま残ります。",
+   "features": [
+    "写真を入れるだけ",
+    "読み取れない名刺は写真のまま",
+    "請求書の読み取りと同じ仕組み"
+   ],
+   "tagline": "写真を入れるだけで一覧を作成"
+  },
+  {
+   "id": "a-0111",
+   "name": "週報のたたき台",
+   "summary": "今週の予定表と送信したメールから、週報の箇条書きを作成します。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "automation",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "林（架空）",
+    "org": "企画（架空）"
+   },
+   "version": "0.2",
+   "updated": "2026-09-27",
+   "environments": [
+    "Power Automate",
+    "Outlook"
+   ],
+   "references": [
+    "a-0006"
+   ],
+   "files": [
+    "weekly-report.zip"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [
+    "rising"
+   ],
+   "description": "まだ企画（架空）でしか試していません。箇条書きの内容は大まかです。",
+   "features": [
+    "予定表とメールから",
+    "箇条書きで出力",
+    "内容は大まか"
+   ],
+   "tagline": "予定とメールから週報を下書き"
+  },
+  {
+   "id": "a-0112",
+   "name": "在庫の発注点シミュレーター",
+   "summary": "過去の出庫実績から、品目ごとの発注点と発注量を試算します。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "spreadsheet",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "渡辺（架空）",
+    "org": "物流（架空）"
+   },
+   "version": "0.8",
+   "updated": "2026-08-20",
+   "environments": [
+    "Excel 2019以降"
+   ],
+   "references": [
+    "a-0015"
+   ],
+   "files": [
+    "reorder-sim.xlsx"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "架空の取引データで動作を確認しています。実際の出庫データを貼り付けると、品目ごとの発注点が出ます。",
+   "features": [
+    "出庫データを貼り付けるだけ",
+    "品目ごとの発注点",
+    "試算の前提を変更可能"
+   ],
+   "tagline": "過去の出庫から発注点を試算"
+  },
+  {
+   "id": "a-0113",
+   "name": "PDF の一括しおり付け",
+   "summary": "フォルダ内の PDF に、見出しをもとにしおりを自動で付けます。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "automation",
+   "price": {
+    "type": "paid",
+    "amount": 500,
+    "unit": "1人分の買い切り",
+    "revenue_dept": "D003"
+   },
+   "maker": {
+    "name": "小林（架空）",
+    "org": "業務システム（架空）"
+   },
+   "version": "1.0",
+   "updated": "2026-07-14",
+   "environments": [
+    "Windows 11"
+   ],
+   "references": [],
+   "files": [
+    "pdf-bookmarks.zip"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "見出しの文字の大きさで階層を決めます。写真だけの PDF には付きません。",
+   "features": [
+    "フォルダ内をまとめて処理",
+    "見出しから階層を判定",
+    "写真だけの PDF は対象外"
+   ],
+   "tagline": "長い PDF のしおりを自動作成"
+  },
+  {
+   "id": "a-0114",
+   "name": "アンケートの自由回答をまとめる",
+   "summary": "自由回答の列を貼り付けると、似た意見をまとめて見出しを付けます。",
+   "tier": "indie",
+   "kind": "tool",
+   "shelf": "prompt",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "林（架空）",
+    "org": "企画（架空）"
+   },
+   "version": "1.0",
+   "updated": "2026-09-12",
+   "environments": [
+    "Claude",
+    "ChatGPT"
+   ],
+   "references": [
+    "a-0006"
+   ],
+   "files": [
+    "group-answers.md"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "まとめ方は実行するたびに少し変わります。件数の多い順に並びます。",
+   "features": [
+    "似た意見を集約",
+    "まとまりごとに見出し",
+    "件数の多い順"
+   ],
+   "tagline": "自由回答を似た意見ごとに整理"
+  },
+  {
+   "id": "a-0103",
+   "name": "稟議書のひな形（案）",
+   "summary": "新しい様式に合わせた稟議書のひな形です。様式はまだ確定していません。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "template",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "田中（架空）",
+    "org": "総務（架空）"
+   },
+   "version": "0.1",
+   "updated": "2026-09-27",
+   "environments": [
+    "Word"
+   ],
+   "references": [
+    "a-0002"
+   ],
+   "files": [
+    "ringi-draft.docx"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "様式が確定したら、審査を申請する予定です。それまでは試しにお使いください。",
+   "features": [
+    "新様式の下書き",
+    "様式は確定前",
+    "Word"
+   ],
+   "tagline": "新様式の稟議書（確定前）"
+  },
+  {
+   "id": "a-0104",
+   "name": "デザイン仕様書 — ダッシュボード",
+   "summary": "数値カードとグラフを並べるダッシュボード画面の仕様書です。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "design-spec",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "小林（架空）",
+    "org": "業務システム（架空）"
+   },
+   "version": "0.4",
+   "updated": "2026-09-28",
+   "environments": [
+    "ブラウザ",
+    "Claude"
+   ],
+   "references": [
+    "a-0003"
+   ],
+   "files": [
+    "design-spec-dashboard.md"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [
+    "rising"
+   ],
+   "description": "一覧画面の仕様書の色をそのまま使っています。グラフの色だけがまだ決まっていません。",
+   "features": [
+    "数値カードとグラフ",
+    "一覧画面と同じ配色",
+    "グラフの色は未定"
+   ],
+   "tagline": "ダッシュボード画面のたたき台"
+  },
+  {
+   "id": "a-0107",
+   "name": "アイコン40点（線画）",
+   "summary": "社内資料で使える、同じ太さの線で描いたアイコンです。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "image",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "松本（架空）",
+    "org": "広報（架空）"
+   },
+   "version": "1.0",
+   "updated": "2026-06-14",
+   "environments": [
+    "PowerPoint",
+    "ブラウザ"
+   ],
+   "references": [],
+   "files": [
+    "icons-40.zip"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [
+    "standard"
+   ],
+   "description": "SVG と PNG の両方が入っています。色は資料の側で付けてください。",
+   "features": [
+    "SVG と PNG",
+    "線の太さを統一",
+    "色は資料側で設定"
+   ],
+   "tagline": "同じ太さの線で描いたアイコン"
+  },
+  {
+   "id": "a-0108",
+   "name": "架空の顧客データ 1,000件",
+   "summary": "テスト用の顧客一覧です。実在の人物は含みません。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "data",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "渡辺（架空）",
+    "org": "物流（架空）"
+   },
+   "version": "1.0",
+   "updated": "2026-05-30",
+   "environments": [
+    "Excel",
+    "CSV"
+   ],
+   "references": [],
+   "files": [
+    "customers-dummy.csv"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "名前も住所も乱数で作成しています。画面のテストにお使いください。",
+   "features": [
+    "1,000件",
+    "乱数の名前と住所",
+    "CSV"
+   ],
+   "tagline": "テスト用の架空の顧客一覧"
+  },
+  {
+   "id": "a-0115",
+   "name": "デザイン仕様書 — 設定画面",
+   "summary": "設定項目が多い画面の仕様書です。項目のまとめ方と保存ボタンの配置を定めています。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "design-spec",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "小林（架空）",
+    "org": "業務システム（架空）"
+   },
+   "version": "0.7",
+   "updated": "2026-09-21",
+   "environments": [
+    "ブラウザ",
+    "Claude",
+    "ChatGPT"
+   ],
+   "references": [
+    "a-0003",
+    "a-0004"
+   ],
+   "files": [
+    "design-spec-settings.md"
+   ],
+   "review": {
+    "status": "requested",
+    "at": "2026-09-27",
+    "note": ""
+   },
+   "signals": [],
+   "description": "一覧画面と入力フォームの仕様書の続きです。項目をまとめる見出しの付け方を定めています。",
+   "features": [
+    "項目のまとめ方",
+    "保存ボタンの位置",
+    "一覧・フォームと同じ配色"
+   ],
+   "tagline": "項目が多い設定画面の型"
+  },
+  {
+   "id": "a-0116",
+   "name": "社内ポスターのひな形",
+   "summary": "掲示板に貼る A3 ポスターのひな形です。見出し・日時・場所の3段で構成しています。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "template",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "松本（架空）",
+    "org": "広報（架空）"
+   },
+   "version": "1.1",
+   "updated": "2026-08-25",
+   "environments": [
+    "PowerPoint",
+    "Canva"
+   ],
+   "references": [
+    "a-0014"
+   ],
+   "files": [
+    "poster-a3.pptx"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "文字を差し替えるだけで使えます。写真の枠は空けてあります。",
+   "features": [
+    "A3",
+    "3段構成",
+    "写真の枠付き"
+   ],
+   "tagline": "文字を差し替えるだけのポスター"
+  },
+  {
+   "id": "a-0117",
+   "name": "図解の部品セット",
+   "summary": "矢印・箱・人・工場など、業務フロー図で使う部品のセットです。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "image",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "松本（架空）",
+    "org": "広報（架空）"
+   },
+   "version": "0.9",
+   "updated": "2026-09-06",
+   "environments": [
+    "PowerPoint",
+    "Figma"
+   ],
+   "references": [
+    "a-0014"
+   ],
+   "files": [
+    "flow-parts.pptx"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [
+    "rising"
+   ],
+   "description": "標準のアイコンと同じ線の太さです。部品をつなげて業務フロー図を描けます。",
+   "features": [
+    "矢印・箱・人・工場",
+    "標準アイコンと同じ線の太さ",
+    "つなげて図を作成"
+   ],
+   "tagline": "業務フロー図の部品集"
+  },
+  {
+   "id": "a-0118",
+   "name": "架空の従業員名簿 500件",
+   "summary": "部門・役職・入社日が入った、実在しない従業員名簿です。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "data",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "林（架空）",
+    "org": "企画（架空）"
+   },
+   "version": "1.0",
+   "updated": "2026-09-02",
+   "environments": [
+    "Excel",
+    "CSV"
+   ],
+   "references": [
+    "a-0108"
+   ],
+   "files": [
+    "employees-dummy.csv"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "組織図の画面のテストに使ったものです。名前は乱数です。",
+   "features": [
+    "500件",
+    "部門・役職・入社日",
+    "乱数の名前"
+   ],
+   "tagline": "テスト用の架空の従業員名簿"
+  },
+  {
+   "id": "a-0119",
+   "name": "打ち合わせメモのひな形",
+   "summary": "1枚で完結する打ち合わせメモのひな形です。目的・話した内容・次回までの宿題を書きます。",
+   "tier": "indie",
+   "kind": "material",
+   "shelf": "template",
+   "price": {
+    "type": "free"
+   },
+   "maker": {
+    "name": "林（架空）",
+    "org": "企画（架空）"
+   },
+   "version": "1.0",
+   "updated": "2026-07-08",
+   "environments": [
+    "Word",
+    "OneNote"
+   ],
+   "references": [
+    "a-0002"
+   ],
+   "files": [
+    "meeting-memo.docx"
+   ],
+   "review": {
+    "status": "none"
+   },
+   "signals": [],
+   "description": "議事録より簡単なメモです。1対1の打ち合わせに向いています。",
+   "features": [
+    "1枚で完結",
+    "目的・内容・次回まで",
+    "1対1の打ち合わせ向け"
+   ],
+   "tagline": "議事録より簡単な打ち合わせメモ"
+  }
+ ]
+}</script>
+<script id="categories" type="application/json">{
+  "tiers": [
+    {"id": "official", "name": "オフィシャル", "sub": "審査済み。全社での利用が承認された成果物"},
+    {"id": "indie", "name": "インディーズ", "sub": "審査なし。だれでもすぐに公開でき、気軽に試せる成果物"}
+  ],
+  "kinds": [
+    {"id": "tool", "name": "ツール", "shelves": [
+      {"id": "spreadsheet", "name": "表計算"},
+      {"id": "automation", "name": "自動化"},
+      {"id": "prompt", "name": "プロンプト・スキル"},
+      {"id": "viewer", "name": "閲覧・可視化"}
+    ]},
+    {"id": "material", "name": "素材", "shelves": [
+      {"id": "design-spec", "name": "デザイン仕様書"},
+      {"id": "template", "name": "資料のひな形"},
+      {"id": "image", "name": "図・アイコン"},
+      {"id": "data", "name": "サンプルデータ"}
+    ]}
+  ],
+  "signals": [
+    {"id": "standard", "name": "定番", "why": "長い期間にわたって、多くの部門で入手されている成果物", "sub": "多くの部門が入手"},
+    {"id": "rising", "name": "人気上昇中", "why": "過去30日間に入手が増えている成果物", "sub": "過去30日間で入手が増加"}
+  ],
+  "departments": [
+    {"code": "D001", "name": "経理企画（架空）"},
+    {"code": "D002", "name": "企画（架空）"},
+    {"code": "D003", "name": "業務システム（架空）"},
+    {"code": "D004", "name": "海外事業（架空）"},
+    {"code": "D005", "name": "総務（架空）"},
+    {"code": "D006", "name": "広報（架空）"},
+    {"code": "D007", "name": "物流（架空）"},
+    {"code": "D008", "name": "営業支援（架空）"},
+    {"code": "D009", "name": "製造管理（架空）"}
+  ]
+}
+</script>
+<script>
+(function(){
+'use strict';
+/* ===================== data ===================== */
+const RAW = JSON.parse(document.getElementById('catalog').textContent);
+const CAT = JSON.parse(document.getElementById('categories').textContent);
+const ME = { name:'佐藤（架空）', org:'経理企画（架空）', initial:'佐' };
+const DEPTS = CAT.departments || []; const DEPT = {}; DEPTS.forEach(d => DEPT[d.code] = d);
+ME.dept = (DEPTS.find(d => d.name === ME.org) || {}).code || '';
+const deptLabel = c => DEPT[c] ? c + ' ' + DEPT[c].name : (c || '—');
+const deptOptions = sel => DEPTS.map(d => '<option value="' + esc(d.code) + '"' + (d.code === sel ? ' selected' : '') + '>' + esc(d.code + ' ' + d.name) + '</option>').join('');
+const HUE = { spreadsheet:150, automation:212, prompt:268, viewer:190, 'design-spec':232, template:28, image:330, data:45 };
+const SHELF = {}; const KIND = {};
+CAT.kinds.forEach(k => { KIND[k.id] = k; k.shelves.forEach(s => { SHELF[s.id] = Object.assign({ kind:k.id, kindName:k.name, hue:HUE[s.id] || 200 }, s); }); });
+const TIER = {}; CAT.tiers.forEach(t => TIER[t.id] = t);
+const SIG = {}; (CAT.signals || []).forEach(s => SIG[s.id] = s);
+const store = {
+  get(k, d){ try { const v = localStorage.getItem('store.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v){ try { localStorage.setItem('store.' + k, JSON.stringify(v)); } catch (e) {} }
+};
+const ss = { get(k){ try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v){ try { sessionStorage.setItem(k, v); } catch (e) {} } };
+let ITEMS = RAW.items.map(i => Object.assign({}, i, { review:Object.assign({ status:'none' }, i.review || {}) }));
+const FEATURES = (RAW.features || []).slice();
+// このブラウザで覚えているもの: 公開したもの、審査の結果、入手したもの、申し込んだもの、役
+store.get('published', []).forEach(p => { if (!ITEMS.some(i => i.id === p.id)) ITEMS.push(p); });
+const REVIEWS = store.get('reviews', {});
+ITEMS.forEach(i => { if (REVIEWS[i.id]) { i.review = REVIEWS[i.id].review; i.tier = REVIEWS[i.id].tier; } });
+const GOT = new Set(store.get('got', []));
+const APPLIED = new Set(store.get('applied', []));
+const APPLY_DEPT = store.get('applyDept', {});
+let ROLE = store.get('role', null);
+(function readRole(){ const q = new URLSearchParams(location.search).get('role') || new URLSearchParams((location.hash.split('?')[1] || '')).get('role'); if (q) { ROLE = q; store.set('role', q); } })();
+const byId = id => ITEMS.find(i => i.id === id);
+const TODAY = new Date(); TODAY.setHours(0, 0, 0, 0);
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+function pd(s){ const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; }
+function md(s){ const d = pd(s); return d ? (d.getMonth() + 1) + '月' + d.getDate() + '日' : ''; }
+function ymd(s){ const d = pd(s); return d ? d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日' : ''; }
+function rel(s){ const d = pd(s); if (!d) return ''; const n = Math.round((TODAY - d) / 86400000); if (n <= 0) return '今日更新'; if (n === 1) return '昨日更新'; if (n <= 30) return n + '日前更新'; return md(s) + '更新'; }
+function sortByUpdated(list){ return list.slice().sort((a, b) => (b.updated || '').localeCompare(a.updated || '') || a.name.localeCompare(b.name, 'ja')); }
+function yen(n){ return '¥' + Number(n).toLocaleString('ja-JP'); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
+function hash(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h; }
+const isTool = it => it.kind === 'tool';
+const envWord = e => e.replace(/ 20\d\d以降$/, '').replace(/ for Web$/, '');
+function isoToday(){ const d = TODAY; return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+/* ===================== color ===================== */
+function hslLum(h, s, l){ s /= 100; l /= 100; const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2; let r, g, b; if (h < 60) [r, g, b] = [c, x, 0]; else if (h < 120) [r, g, b] = [x, c, 0]; else if (h < 180) [r, g, b] = [0, c, x]; else if (h < 240) [r, g, b] = [0, x, c]; else if (h < 300) [r, g, b] = [x, 0, c]; else [r, g, b] = [c, 0, x]; const f = v => { v += m; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); }
+// 白い文字（4.5:1）や白い線画（3:1）を載せられる明度。上限−2。青〜紫は 50／52 で頭打ち
+function faceL(h, target){ h = ((h % 360) + 360) % 360; const start = target >= 4.5 ? 52 : 54; for (let L = start; L > 8; L--) { if (1.05 / (hslLum(h, 72, L) + 0.05) >= target) return L - 2; } return 10; }
+const faceCache = {};
+function face(h, target){ const k = h + ':' + target; if (!(k in faceCache)) faceCache[k] = faceL(h, target); return faceCache[k]; }
+// 特集の面。光彩の明度は面と同じ L にして、白い文字のコントラストを崩さない
+function faceStyle(h, target){ const L = face(h, target || 4.5); return 'background:radial-gradient(circle at 20% 90%,hsl(' + (h - 30) + ' 80% ' + L + '% / .5) 0,transparent 42%),radial-gradient(circle at 85% 15%,rgba(255,255,255,.06) 0,transparent 32%),linear-gradient(135deg,hsl(' + h + ' 72% ' + L + '%),hsl(' + (h + 18) + ' 70% ' + (L - 10) + '%))'; }
+function itemHue(it){ const base = (SHELF[it.shelf] || {}).hue || 200; return base + ((hash(it.id) % 41) - 20); }
+
+/* ===================== pieces ===================== */
+let uid = 0;
+const symOf = it => 'sym-' + (SHELF[it.shelf] ? it.shelf : 'template');
+function iconSvg(it, size){
+  const h = itemHue(it), sym = symOf(it), cls = 'icon icon-' + (size || 64) + (isTool(it) ? ' tool' : ' material');
+  if (isTool(it)) {
+    const L = face(h, 3.5), id = 'g' + (++uid), r = hash(it.id + 'c'), cx = 20 + (r % 40), cy = 44 + ((r >> 3) % 30), rad = 28 + (r % 20);
+    const dirs = [[0, 0, 1, 1], [1, 0, 0, 1], [0, 1, 1, 0], [0, 0, 0, 1]], d = dirs[hash(it.id + 'd') % 4];
+    return '<svg class="' + cls + '" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="' + id + '" x1="' + d[0] + '" y1="' + d[1] + '" x2="' + d[2] + '" y2="' + d[3] + '"><stop offset="0" stop-color="hsl(' + h + ' 72% ' + L + '%)"/><stop offset="1" stop-color="hsl(' + (h + 18) + ' 70% ' + (L - 10) + '%)"/></linearGradient></defs><rect width="64" height="64" fill="url(#' + id + ')"/><circle cx="' + cx + '" cy="' + cy + '" r="' + rad + '" fill="#fff" opacity=".06"/><use href="#' + sym + '" x="16" y="16" width="32" height="32"/></svg>';
+  }
+  const fv = hash(it.id + 'f') % 3;
+  const frame = fv === 0 ? '<rect class="frame" x="4.5" y="4.5" width="55" height="55" rx="9"/>' : fv === 1 ? '' : '<rect class="frame" x="4.5" y="4.5" width="55" height="55" rx="9"/><rect class="frame" x="8.5" y="8.5" width="47" height="47" rx="7"/>';
+  return '<svg class="' + cls + '" viewBox="0 0 64 64" style="--h:' + h + '" aria-hidden="true"><rect class="face" width="64" height="64"/>' + frame + '<use href="#' + sym + '" x="17" y="17" width="30" height="30"/></svg>';
+}
+function shelfIcon(shelf){ const s = SHELF[shelf]; return '<span class="shelf-ic" style="--h:' + s.hue + ';--l:' + face(s.hue, 3) + '%"><svg viewBox="0 0 24 24"><use href="#sym-' + s.id + '"/></svg></span>'; }
+const ui = (n, cls) => '<svg class="ui ' + (cls || '') + '" aria-hidden="true"><use href="#ui-' + n + '"/></svg>';
+const checkTag = '<span class="ck cap" title="審査済み">' + ui('check') + '<span class="t">審査済み</span></span>';
+function pillFor(it, big, o){
+  o = o || {};
+  const got = GOT.has(it.id), paid = it.price && it.price.type === 'paid', applied = paid && !got && APPLIED.has(it.id);
+  let txt = got ? (isTool(it) ? '開く' : '入手済み') : applied ? '申し込み中' : (paid ? yen(it.price.amount) : '入手');
+  const state = (got && !isTool(it)) || applied;
+  const cls = 'pill' + (big ? ' primary' : '') + (state ? ' state' : '');
+  const aria = paid && !got && !applied ? '申し込む（' + yen(it.price.amount) + '・' + it.price.unit + '）：' + it.name : txt + '：' + it.name;
+  let s = '<button class="' + cls + '" data-get="' + it.id + '" aria-label="' + esc(aria) + '"' + (state ? ' aria-disabled="true"' : '') + '>' + txt + '</button>';
+  if (paid && !got && !applied && !o.noUnit) s += '<span class="cap">' + esc(it.price.unit) + '</span>';
+  if (applied && !o.noUnit) s += '<span class="cap">' + (big ? '提供部署の承認待ち' : '承認待ち') + '</span>';
+  return s;
+}
+function joinProse(a, b){ a = (a || '').trim(); b = (b || '').trim(); if (!a) return b; if (!b) return a; if (b.startsWith(a)) return b; return (/[。．.!！?？」）)]$/.test(a) ? a : a + '。') + b; }
+function rowCard(it, o){
+  o = o || {};
+  const sh = SHELF[it.shelf] || { name:'' };
+  const why = o.why != null ? o.why : o.dateWhy ? rel(it.updated) : ((it.signals && it.signals[0] && SIG[it.signals[0]]) ? SIG[it.signals[0]].name : rel(it.updated));
+  const mixed = !!o.mixed && it.tier === 'official';
+  const line3 = o.line3 != null ? o.line3 : esc(sh.name + ' · ' + it.maker.name + (o.compact ? '' : ' · ' + it.maker.org));
+  const href = o.href || ('item/' + it.id);
+  const icon = o.icon != null ? o.icon : iconSvg(it, o.small ? 44 : 64);
+  return '<div class="row' + (o.small ? ' small' : '') + (o.on ? ' on' : '') + '" data-id="' + it.id + '">' + icon +
+    '<div class="row-mid"><div class="row-name"><a href="#/' + href + '" data-go="' + href + '">' + esc(it.name) + '</a>' + (mixed ? checkTag : '') + '</div>' +
+    '<div class="row-tag">' + esc(it.tagline || it.summary) + '</div>' +
+    (o.small ? '' : '<div class="row-meta"><span class="ell">' + line3 + '</span>' + (why ? '<span class="why">' + esc(why) + '</span>' : '') + '</div>') +
+    '</div>' + (o.small || o.noPill ? '' : '<div class="row-act">' + (o.pill != null ? o.pill : pillFor(it)) + '</div>') + '</div>';
+}
+function shelfRow(title, items, o){
+  o = o || {}; items = sortByUpdated(items); if (!items.length) return '';
+  const rows = Math.min(3, items.length), cls = rows === 1 ? ' one' : rows === 2 ? ' short' : '';
+  return '<section class="sec' + (o.bleed ? ' bleed' : '') + '"><div class="sec-h"><h2 class="t2">' + esc(title) + '</h2>' + (o.sub ? '<span class="sub">' + esc(o.sub) + '</span>' : '') +
+    (o.more ? '<a class="more" href="#/' + o.more + '" data-go="' + o.more + '">すべて見る ›</a>' : '') +
+    '<span class="arrows"><button type="button" data-nav="prev" aria-label="前へ">' + ui('left') + '</button><button type="button" data-nav="next" aria-label="次へ">' + ui('chev') + '</button></span></div>' +
+    '<div class="shelf' + cls + '">' + items.map(it => rowCard(it, { mixed:o.mixed, dateWhy:true, compact:true })).join('') + '</div></section>';
+}
+function rowsList(items, o){ return '<div class="rows">' + items.map(it => rowCard(it, o)).join('') + '</div>'; }
+function stackOf(items){ return '<span class="stack">' + items.slice(0, 3).map(it => iconSvg(it, 96)).join('') + '</span>'; }
+function markOf(it){ return '<span class="mark"><svg viewBox="0 0 24 24"><use href="#' + symOf(it) + '"/></svg></span>'; }
+function todayCard(f){
+  const items = f.items.map(byId).filter(Boolean), first = items[0];
+  return '<a class="today" href="#/feature/' + f.id + '" data-go="feature/' + f.id + '" style="' + faceStyle(f.hue) + '"><span class="scrim"></span>' + (first ? markOf(first) : '') +
+    '<span class="txt"><span class="cap">特集 · ' + esc(TIER[f.tier].name) + '</span><span class="t1">' + esc(f.title) + '</span><span class="lead">' + esc(f.lead) + '</span></span>' +
+    stackOf(items) +
+    (first ? '<span class="band">' + iconSvg(first, 44) + '<span class="row-mid"><span class="row-name ell">' + esc(first.name) + '</span><span class="row-tag">' + esc(first.tagline || '') + '</span></span>' + (items.length > 1 ? '<span class="more">ほか' + (items.length - 1) + '件 ›</span>' : '<span class="more">見る ›</span>') + '</span>' : '') + '</a>';
+}
+function collectionCard(f){
+  const items = f.items.map(byId).filter(Boolean);
+  return '<div class="coll"><div class="face" style="' + faceStyle(f.hue) + '"><span class="cap">コレクション</span><a class="t2" href="#/feature/' + f.id + '" data-go="feature/' + f.id + '" style="color:#fff">' + esc(f.title) + '</a><span class="sub">' + esc(f.lead) + '</span></div>' +
+    '<div class="list">' + items.slice(0, 3).map(it => rowCard(it, { small:true })).join('') + '</div></div>';
+}
+function bigCard(f){
+  const items = f.items.map(byId).filter(Boolean);
+  return '<a class="bigcard" href="#/feature/' + f.id + '" data-go="feature/' + f.id + '"><span class="cap">特集</span><span class="t2" style="display:block">' + esc(f.title) + '</span><span class="lead" style="display:block">' + esc(f.lead) + '</span>' +
+    '<span class="face" style="' + faceStyle(f.hue, 3) + '">' + (items[0] ? markOf(items[0]) : '') + stackOf(items) + '</span></a>';
+}
+function entranceTiles(){
+  return '<div class="tiles2">' + CAT.tiers.map(t => { const n = ITEMS.filter(i => i.tier === t.id).length; return '<a class="tile" href="#/' + t.id + '" data-go="' + t.id + '">' + ui(t.id === 'official' ? 'official' : 'indie', 'tile-ic') + '<span><span class="t2">' + esc(t.name) + '</span><span class="sub">' + esc(t.sub) + '</span></span><span class="n">' + n + '件 ›</span></a>'; }).join('') + '</div>';
+}
+function shelfTile(s, n, attrs, tag){ tag = tag || 'a'; return '<' + tag + ' class="stile" ' + attrs + '>' + shelfIcon(s.id) + '<span class="txt"><span class="name ell">' + esc(s.name) + '</span><span class="n">' + n + '</span></span>' + ui('chev', 'chev') + '</' + tag + '>'; }
+function shelfTiles(tier){
+  const base = tier ? ITEMS.filter(i => i.tier === tier) : ITEMS, pre = tier || 'all';
+  return '<div class="tiles8">' + CAT.kinds.map(k => k.shelves.map(s => { const n = base.filter(i => i.shelf === s.id).length; const r = pre + '/' + k.id + '/' + s.id; return shelfTile(s, n + '件', 'href="#/' + r + '" data-go="' + r + '"'); }).join('')).join('') + '</div>';
+}
+function boardFor(name, it){
+  const h = itemHue(it), ext = (name.split('.').pop() || '').toLowerCase(), L = face(h, 3), st = 'style="--h:' + h + ';--l:' + L + '%"';
+  if (ext === 'html' || ext === 'htm') return '<div class="board browser paper" ' + st + '><div class="win"><div class="tb"><i></i><i></i><i></i><span class="url"></span></div><div class="body"><i></i><i></i><i></i><i></i></div></div><div class="fn">' + esc(name) + '</div></div>';
+  if (ext === 'zip') return '<div class="board folder paper" ' + st + '><div class="fd"><div class="tab"></div><div class="bodyf"></div></div><div class="fn">' + esc(name) + '</div></div>';
+  return '<div class="board paper" ' + st + '><div class="sheet-p"><span class="ext">' + esc(ext.toUpperCase()) + '</span><span class="lines"><i></i><i></i><i></i></span><span class="fn">' + esc(name) + '</span></div></div>';
+}
+function tagBoard(text, it){
+  const h = itemHue(it) + 24;
+  return '<div class="board tagb" style="' + faceStyle(h) + '"><span class="txt">' + esc(text) + '</span>' + markOf(it) + '</div>';
+}
+function chk(on, text){ return '<div class="chk"><span class="m ' + (on ? 'on' : 'off') + '">' + (on ? ui('check') : '') + '</span><span>' + text + '</span></div>'; }
+function largeHead(o){
+  return '<header class="ph' + (o.bc ? ' has-bc' : '') + '">' + (o.bc ? '<nav class="bc">' + o.bc + '</nav>' : '') + (o.eyebrow ? '<span class="cap eyebrow">' + esc(o.eyebrow) + '</span>' : '') +
+    '<h1 class="large"><span>' + esc(o.title) + '</span>' + (o.count != null ? '<span class="n">' + o.count + '件</span>' : '') + (o.pubPill ? '<a class="pill mid" href="#/publish" data-go="publish">公開する</a>' : '') + '</h1>' +
+    '<div class="sentinel" data-title="' + esc(o.title) + '"></div>' + (o.sub ? '<div class="sub">' + o.sub + '</div>' : '') + '</header>';
+}
+const footer = '<footer class="foot"><span>成果物のストア · 社内のツールと素材</span><span>区分: オフィシャル（審査済み）／インディーズ（審査なし）</span></footer>';
+function empty(l1, l2){ return '<div class="empty"><div class="l1">' + esc(l1) + '</div>' + (l2 ? '<div class="l2">' + esc(l2) + '</div>' : '') + '</div>'; }
+function notFound(l1, l2){ return largeHead({ title:'見つかりません' }) + empty(l1, l2) + footer; }
+function segmented(opts, cur, key){ const i = Math.max(0, opts.findIndex(o => o[0] === cur)); return '<div class="seg" style="--n:' + opts.length + ';--i:' + i + '" role="tablist"><span class="thumb"></span>' + opts.map(o => '<button type="button" class="' + (o[0] === cur ? 'on' : '') + '" data-set="' + key + '=' + o[0] + '" role="tab" aria-selected="' + (o[0] === cur) + '">' + esc(o[1]) + '</button>').join('') + '</div>'; }
+
+/* ===================== pages ===================== */
+function recent(list, n){ const cut = new Date(TODAY); cut.setDate(cut.getDate() - 14); const s = sortByUpdated(list); const r = s.filter(i => { const d = pd(i.updated); return d && d >= cut; }); return r.length >= 4 ? { items:r.slice(0, n || 12), sub:'過去14日間に更新された成果物' } : { items:s.slice(0, n || 12), sub:'更新日の新しい順' }; }
+function pageHome(){
+  const story = FEATURES.find(f => f.kind === 'story'), coll = FEATURES.find(f => f.kind === 'collection');
+  const date = TODAY.toLocaleDateString('ja-JP', { month:'long', day:'numeric', weekday:'long' });
+  const rc = recent(ITEMS, 6);
+  // 同じ成果物をホームの行に二度出さない
+  const seen = new Set(rc.items.map(i => i.id));
+  const fresh = list => { const s = sortByUpdated(list), d = s.filter(i => !seen.has(i.id)); const out = d.length >= 3 ? d : s; out.forEach(i => seen.add(i.id)); return out; };
+  return largeHead({ eyebrow:date, title:'ホーム', pubPill:true }) +
+    (story ? '<div class="sec" style="margin-top:20px">' + todayCard(story) + '</div>' : '') +
+    '<div class="sec">' + entranceTiles() + '</div>' +
+    '<section class="sec"><div class="sec-h"><h2 class="t2">カテゴリーから探す</h2></div>' + shelfTiles(null) + '</section>' +
+    shelfRow('最近の更新', rc.items, { sub:rc.sub, mixed:true, more:'all' }) +
+    (coll ? '<div class="sec">' + collectionCard(coll) + '</div>' : '') +
+    shelfRow('定番', fresh(ITEMS.filter(i => (i.signals || []).includes('standard'))), { sub:SIG.standard && SIG.standard.why, mixed:true }) +
+    shelfRow('人気上昇中', fresh(ITEMS.filter(i => (i.signals || []).includes('rising'))), { sub:SIG.rising && SIG.rising.why, mixed:true }) + footer;
+}
+function pageTier(tier){
+  const t = TIER[tier], list = ITEMS.filter(i => i.tier === tier);
+  const story = FEATURES.find(f => f.kind === 'story' && f.tier === tier), coll = FEATURES.find(f => f.kind === 'collection' && f.tier === tier);
+  return largeHead({ title:t.name, sub:esc(t.sub), pubPill:true }) +
+    '<section class="sec" style="margin-top:24px"><div class="sec-h"><h2 class="t2">カテゴリーから探す</h2></div>' + shelfTiles(tier) + '</section>' +
+    (story ? '<div class="sec">' + bigCard(story) + '</div>' : '') +
+    (coll ? '<div class="sec">' + collectionCard(coll) + '</div>' : '') +
+    CAT.kinds.map(k => shelfRow(k.name, list.filter(i => i.kind === k.id), { more:tier + '/' + k.id })).join('') + footer;
+}
+function pageList(tierSeg, kind, shelf, q){
+  const all = tierSeg === 'all', tierCur = all ? (q.tier || 'all') : tierSeg;
+  if ((!all && !TIER[tierSeg]) || (kind && !KIND[kind]) || (shelf && !SHELF[shelf])) return notFound('このカテゴリーは存在しません', 'カテゴリーからもう一度探してください。');
+  let list = ITEMS.filter(i => (tierCur === 'all' || i.tier === tierCur) && (!kind || i.kind === kind) && (!shelf || i.shelf === shelf));
+  const envs = {}; list.forEach(i => (i.environments || []).forEach(e => { const w = envWord(e); envs[w] = (envs[w] || 0) + 1; }));
+  const envTop = Object.keys(envs).sort((a, b) => envs[b] - envs[a] || a.localeCompare(b, 'ja')).slice(0, 8);
+  const filtered = !!(q.price === 'free' || q.price === 'paid' || q.env);
+  if (q.price === 'free') list = list.filter(i => i.price.type === 'free'); if (q.price === 'paid') list = list.filter(i => i.price.type === 'paid');
+  if (q.env) list = list.filter(i => (i.environments || []).some(e => envWord(e) === q.env));
+  list = sortByUpdated(list); if (q.sort === 'name') list = list.slice().sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+  const n = +q.n || 20, shown = list.slice(0, n);
+  const title = shelf ? SHELF[shelf].name : (kind ? KIND[kind].name : 'すべて');
+  const eyebrow = (all ? (TIER[tierCur] ? TIER[tierCur].name : 'すべての区分') : TIER[tierSeg].name) + (shelf ? ' · ' + KIND[kind].name : '');
+  const bc = '<a href="#/' + (all ? 'home' : tierSeg) + '" data-go="' + (all ? 'home' : tierSeg) + '">' + (all ? 'ホーム' : esc(TIER[tierSeg].name)) + '</a><span class="sep">›</span>' + (shelf ? '<a href="#/' + tierSeg + '/' + kind + '" data-go="' + tierSeg + '/' + kind + '">' + esc(KIND[kind].name) + '</a><span class="sep">›</span>' : '') + '<span class="cur">' + esc(title) + '</span>';
+  const emptyHtml = filtered ? empty('条件に合う成果物はありません', '絞り込みを解除するか、別の対応環境を選んでください。') : tierCur === 'official' ? empty('オフィシャルには、このカテゴリーの成果物がまだありません', 'インディーズには、同じカテゴリーの成果物があるかもしれません。') : empty('このカテゴリーの成果物はまだありません', 'インディーズなら、審査なしですぐに公開できます。');
+  return largeHead({ bc:bc, eyebrow:eyebrow, title:title, count:list.length, pubPill:true }) +
+    '<div class="ctrl">' + (all ? segmented([['all', 'すべて'], ['official', 'オフィシャル'], ['indie', 'インディーズ']], tierCur, 'tier') : '') +
+    segmented([['all', 'すべて'], ['free', '無償'], ['paid', '有償']], q.price || 'all', 'price') +
+    '<span class="sortsel">並べ替え<span class="sel"><select data-sort="1" aria-label="並べ替え"><option value="updated"' + (q.sort !== 'name' ? ' selected' : '') + '>更新日順</option><option value="name"' + (q.sort === 'name' ? ' selected' : '') + '>名前順</option></select>' + ui('down') + '</span></span></div>' +
+    (envTop.length ? '<div class="ctrl"><span class="sub">対応環境</span><div class="chips">' + envTop.map(e => '<button type="button" class="chip' + (q.env === e ? ' on' : '') + '" data-set="env=' + (q.env === e ? '' : esc(e)) + '">' + esc(e) + (q.env === e ? ui('x') : '') + '</button>').join('') + '</div></div>' : '') +
+    (shown.length ? rowsList(shown, { mixed:tierCur === 'all' }) : emptyHtml) +
+    (list.length > n ? '<button type="button" class="pill mid morebtn" data-set="n=' + (n + 20) + '">もっと見る（残り' + (list.length - n) + '件）</button>' : '') + footer;
+}
+function detailBody(it){
+  const sh = SHELF[it.shelf], t = TIER[it.tier], rv = it.review || { status:'none' }, paid = it.price.type === 'paid';
+  const indie = it.tier !== 'official';
+  const envs = it.environments || [], refs = (it.references || []).map(byId).filter(Boolean), files = it.files || [];
+  const usedBy = ITEMS.filter(x => (x.references || []).includes(it.id));
+  const same = ITEMS.filter(x => x.id !== it.id && x.maker.name === it.maker.name);
+  const bc = '<a href="#/' + it.tier + '" data-go="' + it.tier + '">' + esc(t.name) + '</a><span class="sep">›</span><a href="#/' + it.tier + '/' + it.kind + '" data-go="' + it.tier + '/' + it.kind + '">' + esc(sh.kindName) + '</a><span class="sep">›</span><a href="#/' + it.tier + '/' + it.kind + '/' + it.shelf + '" data-go="' + it.tier + '/' + it.kind + '/' + it.shelf + '">' + esc(sh.name) + '</a>';
+  const notebox = indie ? '<div class="notebox"><div class="h">インディーズ（審査なし）</div><p>社内情報の取り扱いや、ほかの部門で使えるかは確認されていません。</p><p class="desc">' + esc(it.description || it.summary) + '</p>' + (rv.status === 'requested' ? '<p>審査を申請中（' + md(rv.at) + '）</p>' : '') + '</div>' : '';
+  // 区分は パンくず＋（メタ行 or 説明箱）、作成者は 帯＋チェック行 の 2 か所まで
+  const meta = [].concat(indie ? [] : [['区分', 'オフィシャル', '審査済み']], [
+    ['価格', paid ? yen(it.price.amount) : '無償', paid ? it.price.unit : '申し込み不要'],
+    ['更新', md(it.updated), 'バージョン ' + (it.version || '—')],
+    ['対応環境', envWord(envs[0] || '—'), envs.length > 1 ? 'ほか' + (envs.length - 1) + 'つ' : '']
+  ]).concat((it.signals || []).slice(0, 1).map(s => ['入手の傾向', SIG[s] ? SIG[s].name : s, SIG[s] ? (SIG[s].sub || SIG[s].why) : '']));
+  const metaHtml = '<div class="meta">' + meta.map(m => '<div class="m"><span class="cap">' + esc(m[0]) + '</span><span class="v">' + esc(m[1]) + '</span><span class="s">' + esc(m[2]) + '</span></div>').join('') + '</div>';
+  const boards = '<div class="boards">' + files.map(f => boardFor(f, it)).join('') + (it.features || []).map(f => tagBoard(f, it)).join('') + '</div>';
+  const full = it.description || '';
+  const desc = joinProse(it.summary, indie && full.length <= 60 ? '' : full);
+  const checks = '<div class="checks">' +
+    (indie ? chk(false, '未審査' + (rv.status === 'requested' ? '（' + md(rv.at) + 'に申請）' : '')) : chk(true, '審査済み ' + esc(ymd(rv.at)) + (rv.note ? ' — ' + esc(rv.note) : ''))) +
+    chk(true, '作成者: ' + esc(it.maker.name) + ' · ' + esc(it.maker.org) + ' — 社員名簿で確認済み') +
+    chk(files.length > 0, files.length ? 'ファイル: ' + files.length + '件をストアで保管（' + esc(files.join('、')) + '）' : 'ファイル: ストアに未登録') +
+    refs.map(r => chk(true, '参考にした成果物: <a href="#/item/' + r.id + '" data-go="item/' + r.id + '">' + esc(r.name) + '</a>' + (r.tier === 'official' ? ' ' + checkTag : ''))).join('') + '</div>';
+  const info = '<div class="info">' +
+    '<div class="ir"><span class="k">対応環境</span><span class="v"><span class="envchips">' + envs.map(e => '<span>' + esc(e) + '</span>').join('') + '</span></span></div>' +
+    ((it.features || []).length ? '<div class="ir"><span class="k">特徴</span><span class="v"><ul>' + it.features.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul></span></div>' : '') +
+    (paid ? '<div class="ir"><span class="k">費用の付け替え</span><span class="v">申し込みが承認されると、申し込み時に選んだ部署の費用として自動で付け替えます（月末締め・翌月度計上）。</span></div><div class="ir"><span class="k">収入の計上部署</span><span class="v">' + esc(deptLabel(it.price.revenue_dept)) + '</span></div>' : '') +
+    '<div class="ir"><span class="k">バージョン</span><span class="v">' + esc(it.version || '—') + ' · ' + esc(ymd(it.updated)) + 'に更新</span></div></div>';
+  return { bc:bc, notebox:notebox, meta:metaHtml, boards:boards, desc:desc, checks:checks, info:info, usedBy:usedBy, same:same, indie:indie, paid:paid };
+}
+function pageDetail(it, o){
+  o = o || {}; const d = detailBody(it), indie = d.indie;
+  const links = '<div class="links"><a href="#" data-cant="' + it.id + '">入手できない場合</a><a href="#" data-copy="' + it.id + '">リンクをコピー</a></div>';
+  const primary = '<div class="right"><span class="row-act">' + pillFor(it, true) + '</span>' + links + '</div>';
+  const got = GOT.has(it.id);
+  return '<article class="wrap narrow"><header class="ph has-bc">' + (o.embedded ? '' : '<nav class="bc">' + d.bc + '</nav>') +
+    '<div class="dhead">' + iconSvg(it, 120) + '<div class="mid"><h1 class="name">' + esc(it.name) + '</h1><div class="sentinel" data-title="' + esc(it.name) + '" data-item="' + it.id + '"></div><div class="tag">' + esc(it.tagline || it.summary) + '</div><a class="maker" href="#/maker/' + encodeURIComponent(it.maker.name) + '" data-go="maker/' + encodeURIComponent(it.maker.name) + '">' + esc(it.maker.name) + ' · ' + esc(it.maker.org) + '</a>' + (o.embedded ? '' : links) + '</div>' + d.notebox + (o.embedded ? '' : primary) + '</div></header>' +
+    d.meta +
+    ((it.files || []).length || (it.features || []).length ? '<section class="dsec bleed">' + d.boards + '</section>' : '') +
+    (d.desc ? '<section class="dsec"><p class="desc clamp" id="desc">' + esc(d.desc) + '</p><button type="button" class="desc-more" data-more="desc" hidden>もっと見る</button></section>' : '') +
+    '<section class="dsec"><h2 class="t2">ストアによる確認</h2>' + d.checks + '</section>' +
+    '<section class="dsec"><h2 class="t2">作成者からの情報</h2>' + d.info + '</section>' +
+    (d.usedBy.length ? '<section class="dsec"><h2 class="t2">これを参考にした成果物</h2><div class="rel">' + d.usedBy.map(x => '<a href="#/item/' + x.id + '" data-go="item/' + x.id + '">' + iconSvg(x, 28) + '<span class="ell">' + esc(x.name) + '</span>' + (x.tier === 'official' ? checkTag : '') + '</a>').join('') + '</div></section>' : '') +
+    (d.same.length && !o.embedded ? shelfRow('同じ作成者の成果物', d.same, { mixed:true, bleed:true }) : '') +
+    (o.embedded ? '' : '<div class="fixbar"><span class="lbl"><span class="ell">' + esc(it.name) + '</span>' + (indie ? '<span class="cap tier">インディーズ（審査なし）</span>' : '') + (d.paid && !got ? '<span class="cap unit">' + esc(APPLIED.has(it.id) ? '提供部署の承認待ち' : it.price.unit) + '</span>' : '') + '</span><span class="row-act">' + pillFor(it, true, { noUnit:true }) + '</span></div>') + '</article>';
+}
+function pageMaker(name){
+  const list = ITEMS.filter(i => i.maker.name === name); if (!list.length) return largeHead({ title:name }) + empty('公開した成果物はまだありません', '') + footer;
+  return largeHead({ eyebrow:'作成者', title:name, sub:esc(list[0].maker.org), count:list.length }) + rowsList(sortByUpdated(list), { mixed:true }) + footer;
+}
+function pageFeature(id){
+  const f = FEATURES.find(x => x.id === id); if (!f) return notFound('この特集は存在しないか、終了しています', 'ホームからもう一度探してください。');
+  const items = f.items.map(byId).filter(Boolean);
+  return '<div class="wrap narrow"><header class="ph has-bc"><nav class="bc"><a href="#/' + f.tier + '" data-go="' + f.tier + '">' + esc(TIER[f.tier].name) + '</a><span class="sep">›</span><span class="cur">特集</span></nav>' +
+    '<div class="fface" style="' + faceStyle(f.hue) + '"><span class="scrim"></span><div class="txt"><span class="cap">' + (f.kind === 'story' ? '特集' : 'コレクション') + ' · ' + esc(TIER[f.tier].name) + '</span><h1 class="t1">' + esc(f.title) + '</h1><div class="sentinel" data-title="' + esc(f.title) + '"></div><p class="lead">' + esc(f.lead) + '</p></div>' + stackOf(items) + '</div></header>' +
+    (f.body ? '<p class="fbody">' + esc(f.body) + '</p>' : '') +
+    rowsList(items, { mixed:true }) + footer + '</div>';
+}
+function searchIndex(q){
+  q = (q || '').trim().toLowerCase(); if (q.length < 1) return [];
+  return sortByUpdated(ITEMS.filter(i => [i.name, i.tagline, i.summary, i.maker.name, i.maker.org, (i.environments || []).join(' '), (SHELF[i.shelf] || {}).name].join(' ').toLowerCase().includes(q)));
+}
+function pageSearch(q){
+  const cur = q.q || '';
+  return largeHead({ title:'検索', pubPill:true }) +
+    '<div class="qbox">' + ui('search') + '<input id="q" type="search" placeholder="名前・作成者・カテゴリーで検索" value="' + esc(cur) + '" autocomplete="off" aria-label="検索"></div>' +
+    '<div id="qres">' + searchResults(cur, q) + '</div>';
+}
+function searchResults(cur, q){
+  q = q || {};
+  if (!cur.trim()) { const rc = recent(ITEMS); return '<div class="ctrl"><div class="chips">' + Object.keys(SHELF).map(s => '<a class="chip" href="#/all/' + SHELF[s].kind + '/' + s + '" data-go="all/' + SHELF[s].kind + '/' + s + '">' + esc(SHELF[s].name) + '</a>').join('') + '</div></div>' + shelfRow('最近の更新', rc.items, { sub:rc.sub, mixed:true, more:'all' }) + footer; }
+  const hits = searchIndex(cur), tier = q.tier || 'all', list = tier === 'all' ? hits : hits.filter(i => i.tier === tier);
+  const seg = '<div class="ctrl">' + segmented([['all', 'すべて'], ['official', 'オフィシャル'], ['indie', 'インディーズ']], tier, 'tier') + '</div>';
+  if (!list.length && hits.length) return seg + empty(TIER[tier].name + 'には「' + cur + '」に一致する成果物はありません', 'すべての区分では ' + hits.length + '件見つかりました。「すべて」を選ぶと表示されます。') + footer;
+  if (!list.length) { const rc = recent(ITEMS); return empty('「' + cur + '」に一致する成果物はありません', '別のキーワードか、作成者の名前で検索してください。') + shelfRow('最近の更新', rc.items, { sub:rc.sub, mixed:true, more:'all' }) + footer; }
+  return '<div class="qres"><div class="n">' + list.length + '件</div></div>' + seg + rowsList(list, { mixed:true }) + footer;
+}
+/* publish */
+const PUB = { name:'', tagline:'', summary:'', description:'', shelf:'', price:'free', amount:'', unit:'1人あたり月額', rdept:ME.dept, envs:[], refs:[], files:[], review:false };
+function pubPreviewItem(){ const sh = SHELF[PUB.shelf]; return { id:'new', name:PUB.name || '（名前）', tagline:PUB.tagline || PUB.summary || '（サブタイトル）', summary:PUB.summary, tier:'indie', kind:sh ? sh.kind : 'tool', shelf:PUB.shelf || 'spreadsheet', price:PUB.price === 'paid' ? { type:'paid', amount:+PUB.amount || 0, unit:PUB.unit, revenue_dept:PUB.rdept } : { type:'free' }, maker:ME, updated:isoToday(), environments:PUB.envs, references:PUB.refs, files:PUB.files, signals:[] }; }
+function pubPreview(){
+  const it = pubPreviewItem(), sh = SHELF[PUB.shelf];
+  const pill = '<span class="pill">' + (it.price.type === 'paid' && it.price.amount ? yen(it.price.amount) : '入手') + '</span>';
+  const row = sh ? rowCard(it, { why:'', compact:true, pill:pill }) : rowCard(it, { why:'', pill:pill, icon:'<span class="icon ph"></span>', line3:esc('（カテゴリー） · ' + ME.name) });
+  return '<span class="cap">プレビュー</span><div class="rowbox">' + row + '</div><div class="path">' + (sh ? 'インディーズ › ' + esc(sh.kindName) + ' › ' + esc(sh.name) : 'インディーズ › （カテゴリーを選ぶと表示されます）') + (PUB.review ? ' · 審査を申請' : '') + '</div>';
+}
+function pubMissing(){ const m = []; if (!PUB.name.trim()) m.push('名前'); if (!PUB.shelf) m.push('カテゴリー'); if (PUB.price === 'paid' && !(+PUB.amount > 0)) m.push('金額'); if (PUB.price === 'paid' && !DEPT[PUB.rdept]) m.push('収入の計上部署'); return m; }
+function pagePublish(){
+  const allEnv = {}; ITEMS.forEach(i => (i.environments || []).forEach(e => { const w = envWord(e); allEnv[w] = (allEnv[w] || 0) + 1; }));
+  const envTop = Object.keys(allEnv).sort((a, b) => allEnv[b] - allEnv[a]).slice(0, 10);
+  const envAll = envTop.concat(PUB.envs.filter(e => !envTop.includes(e)));
+  const f = (id, label, ph, max, val) => '<div class="frow"><label for="p-' + id + '">' + label + '</label><span class="in"><input id="p-' + id + '" type="text" data-pub="' + id + '" maxlength="' + max + '" placeholder="' + esc(ph) + '" value="' + esc(val) + '"><span class="cnt">' + val.length + '/' + max + '</span></span></div>';
+  return '<div class="wrap narrow">' + largeHead({ title:'公開する', sub:'審査なしですぐにインディーズに公開されます。' }) +
+    '<div class="pub"><form id="pubform" autocomplete="off" novalidate>' +
+    '<div class="grp"><span class="cap">1. 名前と説明</span><div class="box">' + f('name', '名前', '例: 月次集計の計算表', 45, PUB.name) + f('tagline', 'サブタイトル', '例: 売上を貼り付けるだけで月次集計', 20, PUB.tagline) + f('summary', '概要', '例: 部門別・月別に集計します', 60, PUB.summary) +
+    '<div class="frow stack"><label for="p-description">詳しい説明（任意）</label><textarea id="p-description" data-pub="description" placeholder="使い方、前提条件、注意点など">' + esc(PUB.description) + '</textarea></div></div></div>' +
+    '<div class="grp"><span class="cap">2. カテゴリー</span><div class="box"><div class="stiles">' + Object.keys(SHELF).map(s => shelfTile(SHELF[s], SHELF[s].kindName, 'type="button" data-pubshelf="' + s + '"' + (PUB.shelf === s ? ' aria-pressed="true"' : ''), 'button').replace('class="stile"', 'class="stile' + (PUB.shelf === s ? ' on' : '') + '"')).join('') + '</div></div></div>' +
+    '<div class="grp"><span class="cap">3. 無償・有償</span><div class="box"><div class="frow"><label>価格</label><span>' + segmented([['free', '無償'], ['paid', '有償']], PUB.price, 'pubprice') + '</span></div>' +
+    (PUB.price === 'paid' ? '<div class="frow"><label for="p-amount">金額</label><span class="unitsel"><input id="p-amount" type="number" min="0" step="100" data-pub="amount" placeholder="¥" value="' + esc(PUB.amount) + '"><select data-pub="unit" aria-label="単位">' + ['1人あたり月額', '1部門あたり月額', '1人分の買い切り'].map(u => '<option' + (PUB.unit === u ? ' selected' : '') + '>' + u + '</option>').join('') + '</select></span></div>' +
+      '<div class="frow"><label for="p-rdept">収入の計上部署</label><span class="stackv"><span class="unitsel"><select id="p-rdept" data-pub="rdept">' + deptOptions(PUB.rdept) + '</select></span><span class="hint">申し込みが承認されると、この部署の収入として自動で付け替えます（月末締め・翌月度計上）。</span></span></div>' : '') + '</div></div>' +
+    '<div class="grp"><span class="cap">4. 対応環境</span><div class="box"><div class="frow stack"><div class="chips">' + envAll.map(e => '<button type="button" class="chip' + (PUB.envs.includes(e) ? ' on' : '') + '" data-pubenv="' + esc(e) + '">' + esc(e) + '</button>').join('') + '<input class="chip" type="text" placeholder="追加…" data-pubenv-new aria-label="対応環境を追加"></div></div></div></div>' +
+    '<div class="grp"><span class="cap">5. 参考にした成果物</span><div class="box"><div class="frow stack"><div class="refpick"><input id="p-ref" type="text" placeholder="成果物の名前で検索"><div class="sq-list" id="p-ref-list" hidden></div></div><div class="reflist" id="p-refs">' + PUB.refs.map(r => '<button type="button" class="chip on" data-pubref-rm="' + r + '">' + esc((byId(r) || {}).name || r) + ui('x') + '</button>').join('') + '</div></div></div></div>' +
+    '<div class="grp"><span class="cap">6. ファイル</span><div class="box"><div class="drop">ここにファイルをドラッグするか、クリックして選択<input type="file" multiple data-pubfile aria-label="ファイルを選択"><div class="fl">' + esc(PUB.files.join('、')) + '</div></div></div></div>' +
+    '<div class="grp"><span class="cap">7. 審査</span><div class="box"><div class="trow"><span class="t"><span>審査を申請</span><span class="hint">申請しなくても、インディーズにはすぐに公開されます。承認されるとオフィシャルに移ります。</span></span><button type="button" class="toggle' + (PUB.review ? ' on' : '') + '" role="switch" aria-checked="' + PUB.review + '" aria-label="審査を申請" data-pubreview></button></div></div></div>' +
+    '<div class="missing" id="p-missing" hidden></div><button type="submit" class="pill primary big" id="p-submit">' + (PUB.review ? '公開して審査を申請する' : 'インディーズに公開する') + '</button></form>' +
+    '<aside class="prev" id="p-prev">' + pubPreview() + '</aside></div></div>';
+}
+function pageReview(q){
+  const queue = ITEMS.filter(i => i.review.status === 'requested').sort((a, b) => (a.review.at || '').localeCompare(b.review.at || ''));
+  const cur = queue.find(i => i.id === q.id) || queue[0];
+  const done = ITEMS.filter(i => i.review.status === 'approved' || i.review.status === 'returned').sort((a, b) => (b.review.at || '').localeCompare(a.review.at || ''));
+  return largeHead({ title:'審査待ち', sub:'申請日の古い順に表示しています。承認すると、オフィシャルに移ります。', count:queue.length }) +
+    '<div class="rv"><div class="q rows">' + (queue.length ? queue.map(i => rowCard(i, { href:'review?id=' + i.id, on:cur && cur.id === i.id, noPill:true, why:'申請日 ' + md(i.review.at), line3:esc((SHELF[i.shelf] || {}).name + ' · ' + i.maker.name) })).join('') : empty('審査待ちの成果物はありません', '')) + '</div>' +
+    '<div class="rvmain">' + (cur ? '<div class="rvbar"><span class="who">審査担当者として表示中</span><input id="rv-note" type="text" placeholder="コメント" maxlength="80" aria-label="コメント（差し戻すときは必須。承認すると詳細に表示されます）"><button type="button" class="pill" id="rv-return" data-return="' + cur.id + '" disabled>差し戻す</button><button type="button" class="pill primary" data-approve="' + cur.id + '">承認する</button></div>' + pageDetail(cur, { embedded:true }) : '') + '</div></div>' +
+    '<section class="sec"><div class="sec-h"><h2 class="t2">審査の履歴</h2></div>' + (done.length ? '<table class="tbl"><thead><tr><th>日付</th><th>名前</th><th>作成者</th><th>結果</th><th>コメント</th></tr></thead><tbody>' + done.map(i => { const res = i.review.status === 'approved' ? '承認' : '差し戻し'; return '<tr><td class="dt">' + esc(ymd(i.review.at)) + '</td><td><a href="#/item/' + i.id + '" data-go="item/' + i.id + '">' + esc(i.name) + '</a><span class="sub tbl-ph">' + esc(i.maker.name) + ' · ' + res + '</span></td><td class="dk">' + esc(i.maker.name) + '</td><td class="dk">' + res + '</td><td class="muted note">' + esc(i.review.note || '') + '</td></tr>'; }).join('') + '</tbody></table>' : empty('審査の履歴はまだありません', '')) + '</section>' + footer;
+}
+function pageMineRows(){
+  const list = sortByUpdated(ITEMS.filter(i => i.maker.name === ME.name));
+  const line3 = it => { const r = it.review, used = ITEMS.filter(x => (x.references || []).includes(it.id)).length, tail = used ? ' · 参考にされた件数: ' + used : ''; if (r.status === 'approved') return '<span class="ck">' + ui('check') + '審査済み ' + md(r.at) + '</span>' + tail; if (r.status === 'requested') return '審査を申請中 ' + md(r.at); if (r.status === 'returned') return '差し戻し: ' + esc(r.note || ''); return 'インディーズに公開中' + tail; };
+  const pill = it => it.review.status === 'none' ? '<button type="button" class="pill" data-request="' + it.id + '">審査を申請する</button>' : it.review.status === 'returned' ? '<button type="button" class="pill" data-request="' + it.id + '">再申請する</button>' : it.review.status === 'requested' ? '<span class="pill state">申請中</span>' : pillFor(it);
+  const n = ITEMS.filter(i => i.review.status === 'requested').length;
+  const narrow = '<div class="only-narrow">' + (ROLE === 'reviewer' ? '<div class="sec" style="margin-top:16px"><a class="tile" href="#/review" data-go="review">' + ui('review', 'tile-ic') + '<span><span class="t2">審査待ち</span><span class="sub">申請日の古い順</span></span><span class="n">' + n + '件 ›</span></a></div>' : '') + '</div>';
+  return largeHead({ title:'公開した成果物', sub:esc(ME.name + ' · ' + ME.org) + ' · この一覧はあなたにだけ表示されます · <button type="button" data-account>審査担当者として表示</button>' }) + narrow +
+    (list.length ? '<div class="rows">' + list.map(it => rowCard(it, { mixed:false, line3:line3(it), why:'', pill:pill(it) })).join('') + '</div>' : empty('公開した成果物はまだありません', '「公開する」から、審査なしですぐに公開できます。')) + footer;
+}
+
+/* ===================== chrome ===================== */
+function navItems(){
+  const n = ITEMS.filter(i => i.review.status === 'requested').length;
+  return { see:[['home', 'ホーム', 'home'], ['official', 'オフィシャル', 'official'], ['indie', 'インディーズ', 'indie'], ['search', '検索', 'search']], put:[['publish', '公開する', 'publish'], ['mine', '公開した成果物', 'mine']], role:ROLE === 'reviewer' ? [['review', '審査待ち', 'review', n]] : [] };
+}
+function renderSide(routeKey){
+  const nv = navItems(), item = a => '<a class="nav' + (routeKey === a[0] ? ' on' : '') + '" href="#/' + a[0] + '" data-go="' + a[0] + '">' + ui(a[2]) + '<span class="ell">' + a[1] + '</span>' + (a[3] ? '<span class="n">' + a[3] + '</span>' : '') + '</a>';
+  document.getElementById('side').innerHTML = '<div class="sq">' + ui('search') + '<input id="sq" type="search" placeholder="検索" aria-label="検索" autocomplete="off"><div class="sq-list" id="sq-list" hidden></div></div>' +
+    '<div class="grp"><span class="cap">ストア</span>' + nv.see.map(item).join('') + '</div><div class="grp"><span class="cap">公開</span>' + nv.put.map(item).join('') + '</div>' + (nv.role.length ? '<div class="grp"><span class="cap">審査</span>' + nv.role.map(item).join('') + '</div>' : '') +
+    '<button type="button" class="me" data-account><span class="avatar">' + ME.initial + '</span><span class="row-mid"><span class="ell">' + esc(ME.name) + '</span><span class="sub ell">' + esc(ME.org) + '</span>' + (ROLE === 'reviewer' ? '<span class="sub ell">審査担当者</span>' : '') + '</span></button>';
+  document.getElementById('tabs').innerHTML = [['home', 'ホーム', 'home'], ['official', 'オフィシャル', 'official'], ['indie', 'インディーズ', 'indie'], ['search', '検索', 'search'], ['mine', 'マイページ', 'mine']].map(a => '<a class="' + (routeKey === a[0] || (a[0] === 'mine' && (routeKey === 'publish' || routeKey === 'review')) ? 'on' : '') + '" href="#/' + a[0] + '" data-go="' + a[0] + '">' + ui(a[2]) + a[1] + '</a>').join('');
+}
+/* ===================== router ===================== */
+function parse(h){ const s = (h || '').replace(/^#\/?/, ''); const [path, qs] = s.split('?'); const seg = path.split('/').filter(Boolean).map(x => { try { return decodeURIComponent(x); } catch (e) { return x; } }); const q = {}; new URLSearchParams(qs || '').forEach((v, k) => q[k] = v); return { seg:seg, q:q, path:path, route:s }; }
+let current = null, scrollPos = {};
+function go(route){ const h = '#/' + route; if (location.hash === h) { render(true); return; } scrollPos[current] = window.scrollY; history.pushState(null, '', h); render(); }
+function replaceRoute(route){ history.replaceState(null, '', '#/' + route); current = '#/' + route; ss.set('store.route', route); }
+window.addEventListener('hashchange', () => render());
+window.addEventListener('popstate', () => render());
+function buildPage(seg, q){
+  let key = seg[0] || 'home', html = '', fixbar = false;
+  if (key === 'home') html = pageHome();
+  else if ((key === 'official' || key === 'indie') && seg.length === 1) html = pageTier(key);
+  else if (key === 'all' && seg.length === 1) { html = pageList('all', null, null, q); key = 'home'; }
+  else if ((key === 'official' || key === 'indie' || key === 'all') && seg.length >= 2) { html = pageList(key, seg[1], seg[2], q); if (key === 'all') key = 'home'; }
+  else if (key === 'item') { const it = byId(seg[1]); if (it) { html = pageDetail(it); key = it.tier; fixbar = true; } else html = notFound('この成果物は存在しないか、削除されています', 'カテゴリーからもう一度探してください。'); }
+  else if (key === 'maker') html = pageMaker(seg[1] || '');
+  else if (key === 'feature') { const f = FEATURES.find(x => x.id === seg[1]); html = pageFeature(seg[1]); key = f ? f.tier : 'home'; }
+  else if (key === 'search') html = pageSearch(q);
+  else if (key === 'publish') html = pagePublish();
+  else if (key === 'review') { if (ROLE !== 'reviewer') { html = largeHead({ title:'審査待ち' }) + empty('この画面は審査担当者だけが開けます', '「公開した成果物」の「審査担当者として表示」から、「審査担当者として表示」をオンにしてください。') + footer; } else { html = pageReview(q); fixbar = true; } }
+  else if (key === 'mine') html = pageMineRows();
+  else html = notFound('このリンクは開けません', 'ホームからもう一度探してください。');
+  return { key:key, html:html, fixbar:fixbar };
+}
+function render(force){
+  let h = location.hash; if (!h || h === '#' || h === '#/') { h = '#/' + (ss.get('store.route') || 'home'); }
+  if (h === current && !force) return;
+  const back = h in scrollPos, y = window.scrollY, sl = Array.from(document.querySelectorAll('.shelf')).map(s => s.scrollLeft);
+  current = h;
+  const { seg, q, route } = parse(h); ss.set('store.route', route);
+  let out;
+  try { out = buildPage(seg, q); } catch (e) { out = { key:'home', html:notFound('このリンクは開けません', 'カテゴリーからもう一度探してください。'), fixbar:false }; }
+  document.body.classList.toggle('has-fixbar', out.fixbar);
+  const wrapped = /^<(article|div) class="wrap/.test(out.html) ? out.html : '<div class="wrap">' + out.html + '</div>';
+  const page = document.getElementById('page');
+  page.classList.add('out');
+  const paint = () => {
+    page.innerHTML = wrapped; page.classList.remove('out'); renderSide(out.key); observe(); afterRender(seg, q);
+    if (force) { window.scrollTo(0, y); document.querySelectorAll('.shelf').forEach((s, i) => { s.scrollLeft = sl[i] || 0; }); }
+    else if (back) { window.scrollTo(0, scrollPos[h] || 0); delete scrollPos[h]; }
+    else window.scrollTo(0, 0);
+  };
+  if (reduced() || force) paint(); else setTimeout(paint, 90);
+}
+/* compact bar */
+let io = null;
+function observe(){
+  if (io) io.disconnect();
+  const bar = document.getElementById('bar'), sent = document.querySelector('.sentinel'); bar.classList.remove('is-compact'); if (!sent) return;
+  const it = sent.dataset.item ? byId(sent.dataset.item) : null;
+  document.getElementById('bar-in').innerHTML = (it ? iconSvg(it, 32) : '') + '<span class="ttl ell">' + esc(sent.dataset.title) + '</span>' + (it ? '<span class="row-act">' + pillFor(it, false, { noUnit:true }) + '</span>' : '');
+  io = new IntersectionObserver(es => { es.forEach(e => bar.classList.toggle('is-compact', !e.isIntersecting && e.boundingClientRect.top < 60)); }, { rootMargin:'-52px 0px 0px 0px', threshold:0 });
+  io.observe(sent);
+}
+function afterRender(seg, q){
+  const d = document.getElementById('desc'); if (d) { const m = document.querySelector('[data-more=desc]'); if (d.scrollHeight > d.clientHeight + 2) m.hidden = false; }
+  const qi = document.getElementById('q'); if (qi && seg[0] === 'search' && matchMedia('(min-width:1024px)').matches) { qi.focus(); qi.setSelectionRange(qi.value.length, qi.value.length); }
+  const rvn = document.getElementById('rv-note'); if (rvn) rvn.addEventListener('input', () => { document.getElementById('rv-return').disabled = !rvn.value.trim(); });
+  // 横スクロールの行の ‹ ›: 送る先が無ければ隠し、端では押せなくする
+  document.querySelectorAll('.sec').forEach(sec => { const sh = sec.querySelector('.shelf'), ar = sec.querySelector('.arrows'); if (!sh || !ar) return; const upd = () => { ar.hidden = sh.scrollWidth <= sh.clientWidth + 1; ar.querySelector('[data-nav=prev]').disabled = sh.scrollLeft <= 0; ar.querySelector('[data-nav=next]').disabled = sh.scrollLeft + sh.clientWidth >= sh.scrollWidth - 1; }; sh.addEventListener('scroll', upd, { passive:true }); upd(); });
+}
+/* ===================== interactions ===================== */
+function toast(msg){ const t = document.getElementById('toast'); t.innerHTML = ui('check') + '<span class="ell">' + esc(msg) + '</span>'; t.hidden = false; clearTimeout(toast.tm); toast.tm = setTimeout(() => { t.hidden = true; }, 2400); }
+let opener = null;
+function sheet(html){ const s = document.getElementById('sheet'); opener = document.activeElement; s.innerHTML = '<div class="sheet" role="dialog" aria-modal="true">' + html + '</div>'; s.hidden = false; const f = s.querySelector('button,input'); if (f) f.focus(); }
+function closeSheet(){ const s = document.getElementById('sheet'); if (s.hidden) return; s.hidden = true; if (opener && opener.focus && document.contains(opener)) opener.focus(); opener = null; }
+function refreshPills(id){ const it = byId(id); document.querySelectorAll('.row-act').forEach(a => { const b = a.querySelector('[data-get="' + id + '"]'); if (b) a.innerHTML = pillFor(it, b.classList.contains('primary'), { noUnit:a.closest('.fixbar,.bar-in') != null }); }); }
+function acquire(id, btn){
+  const it = byId(id); if (!it) return;
+  if (GOT.has(id)) { if (isTool(it)) toast('「' + it.name + '」を開きます'); return; }
+  if (it.price.type === 'paid' && APPLIED.has(id)) { toast('申し込み中です（提供部署の承認待ち）'); return; }
+  if (it.price.type === 'paid' && it.maker.name === ME.name) { toast('自分が公開した成果物には申し込めません'); return; }
+  if (it.price.type === 'paid') {
+    sheet('<h2 class="t2">利用の申し込み</h2><p>' + esc(it.name) + ' — ' + yen(it.price.amount) + '（' + esc(it.price.unit) + '）</p><div class="kv"><div><span>作成者</span><span>' + esc(it.maker.name + ' · ' + it.maker.org) + '</span></div><div><span>提供部署</span><span>' + esc(deptLabel(it.price.revenue_dept)) + '</span></div><div><span>申込者</span><span>' + esc(ME.name + ' · ' + ME.org) + '</span></div><div><label for="ap-dept">費用の計上部署</label><span class="unitsel"><select id="ap-dept">' + deptOptions(APPLY_DEPT[id] || ME.dept) + '</select></span></div></div><p class="note">提供部署が承認すると、選んだ部署の費用として自動で付け替えます（月末締め・翌月度計上）。経理の手続きは不要です。</p><div class="acts"><button type="button" class="pill" data-sheet-close>キャンセル</button><button type="button" class="pill primary" data-apply="' + id + '">申し込む</button></div>');
+    return;
+  }
+  const finish = () => { GOT.add(id); store.set('got', Array.from(GOT)); toast('「' + it.name + '」を入手しました'); refreshPills(id); };
+  const w = btn.offsetWidth; btn.style.width = w + 'px'; btn.disabled = true; btn.innerHTML = '<svg class="ring" viewBox="0 0 28 28"><circle class="bg" cx="14" cy="14" r="12"/><circle class="fg" cx="14" cy="14" r="12"/></svg>';
+  setTimeout(finish, reduced() ? 0 : 900);
+}
+function linkSheet(url){ sheet('<h2 class="t2">このページのリンク</h2><p><code>' + esc(url) + '</code></p><div class="acts"><button type="button" class="pill primary" data-sheet-close>閉じる</button></div>'); }
+function copyLink(id){ const url = location.href.split('#')[0] + '#/item/' + id; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(() => toast('リンクをコピーしました'), () => linkSheet(url)); else linkSheet(url); }
+function cantInstall(id){ const it = byId(id), files = it.files || []; sheet('<h2 class="t2">入手できない場合</h2><p>' + (files.length ? '同じファイルをストアの共有フォルダにも保管しています。それでも入手できない場合は、作成者に直接お問い合わせください。' : 'この成果物のファイルは、まだストアに登録されていません。作成者に直接お問い合わせください。') + '</p><div class="kv">' + (files.length ? '<div><span>共有フォルダ</span><span><code>\\\\share\\store\\' + esc(it.tier) + '\\' + esc(it.id) + '\\</code></span></div>' : '') + '<div><span>ファイル</span><span>' + esc(files.join('、') || '未登録') + '</span></div><div><span>作成者</span><span>' + esc(it.maker.name + ' · ' + it.maker.org) + '</span></div></div><div class="acts"><button type="button" class="pill primary" data-sheet-close>閉じる</button></div>'); }
+function accountSheet(){ sheet('<h2 class="t2">' + esc(ME.name) + '</h2><p>' + esc(ME.org) + '</p><div class="trow" style="padding:16px 0 0"><span class="t"><span>審査担当者として表示</span><span class="hint sub">「審査待ち」の画面を開けるようになります。</span></span><button type="button" class="toggle' + (ROLE === 'reviewer' ? ' on' : '') + '" role="switch" aria-checked="' + (ROLE === 'reviewer') + '" aria-label="審査担当者として表示" data-role-toggle></button></div><div class="acts"><button type="button" class="pill primary" data-sheet-close>閉じる</button></div>'); }
+function setQuery(kv){ const { route, q } = parse(location.hash || '#/' + (ss.get('store.route') || 'home')); const [k, v] = kv.split('='); const nq = Object.assign({}, q); if (v === '' || v == null) delete nq[k]; else nq[k] = v; if (k !== 'n') delete nq.n; const base = route.split('?')[0]; const qs = new URLSearchParams(nq).toString(); go(base + (qs ? '?' + qs : '')); }
+function candidates(qv, box, onPick){
+  const list = searchIndex(qv).slice(0, 8);
+  if (qv.trim().length < 2 || !list.length) { box.hidden = true; box.innerHTML = ''; return; }
+  box.innerHTML = list.map(it => '<button type="button" data-pick="' + it.id + '">' + iconSvg(it, 28) + '<span class="row-mid"><span class="ell">' + esc(it.name) + '</span><span class="sub ell">' + esc((SHELF[it.shelf] || {}).name + ' · ' + it.maker.name) + '</span></span></button>').join('');
+  box.hidden = false; box.onclick = e => { const b = e.target.closest('[data-pick]'); if (b) { onPick(b.dataset.pick); box.hidden = true; } };
+}
+function moveCandidate(box, dir){ const bs = Array.from(box.querySelectorAll('[data-pick]')); if (!bs.length) return; let i = bs.findIndex(b => b.classList.contains('on')); bs.forEach(b => b.classList.remove('on')); i = (i + dir + bs.length) % bs.length; bs[i].classList.add('on'); }
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-go],[data-get],[data-nav],[data-set],[data-more],[data-copy],[data-cant],[data-sheet-close],[data-apply],[data-account],[data-role-toggle],[data-pubshelf],[data-pubenv],[data-pubref-rm],[data-pubreview],[data-approve],[data-return],[data-request]');
+  if (!t) { if (e.target.id === 'sheet') closeSheet(); return; }
+  if (t.dataset.go != null) { e.preventDefault(); go(t.dataset.go); return; }
+  if (t.dataset.get) { e.preventDefault(); acquire(t.dataset.get, t); return; }
+  if (t.dataset.nav) { const sh = t.closest('.sec').querySelector('.shelf'); const w = sh.clientWidth - 24; sh.scrollBy({ left:t.dataset.nav === 'next' ? w : -w, behavior:reduced() ? 'auto' : 'smooth' }); return; }
+  if (t.dataset.set != null) { if (t.dataset.set.startsWith('pubprice=')) { PUB.price = t.dataset.set.split('=')[1]; rerenderPublish(); return; } setQuery(t.dataset.set); return; }
+  if (t.dataset.more) { const d = document.getElementById(t.dataset.more); d.classList.remove('clamp'); t.hidden = true; return; }
+  if (t.dataset.copy) { e.preventDefault(); copyLink(t.dataset.copy); return; }
+  if (t.dataset.cant) { e.preventDefault(); cantInstall(t.dataset.cant); return; }
+  if (t.dataset.sheetClose != null) { closeSheet(); return; }
+  if (t.dataset.apply) { const it = byId(t.dataset.apply); const dsel = document.getElementById('ap-dept'); APPLY_DEPT[it.id] = dsel ? dsel.value : ME.dept; store.set('applyDept', APPLY_DEPT); closeSheet(); APPLIED.add(it.id); store.set('applied', Array.from(APPLIED)); toast('「' + it.name + '」の利用を申し込みました'); refreshPills(it.id); document.querySelectorAll('.fixbar .unit').forEach(u => { u.textContent = '提供部署の承認待ち'; }); return; }
+  if (t.dataset.account != null) { accountSheet(); return; }
+  if (t.dataset.roleToggle != null) { ROLE = ROLE === 'reviewer' ? null : 'reviewer'; store.set('role', ROLE); t.classList.toggle('on', ROLE === 'reviewer'); t.setAttribute('aria-checked', ROLE === 'reviewer'); renderSide(parse(current).seg[0] || 'home'); if (/^#\/(mine|review)/.test(current)) { const y = window.scrollY; const out = buildPage(parse(current).seg, parse(current).q); document.getElementById('page').innerHTML = /^<(article|div) class="wrap/.test(out.html) ? out.html : '<div class="wrap">' + out.html + '</div>'; observe(); afterRender(parse(current).seg, parse(current).q); window.scrollTo(0, y); } return; }
+  if (t.dataset.pubshelf) { PUB.shelf = t.dataset.pubshelf; document.querySelectorAll('[data-pubshelf]').forEach(b => { b.classList.toggle('on', b.dataset.pubshelf === PUB.shelf); b.setAttribute('aria-pressed', b.dataset.pubshelf === PUB.shelf); }); refreshPreview(); return; }
+  if (t.dataset.pubenv) { const v = t.dataset.pubenv; const i = PUB.envs.indexOf(v); if (i >= 0) PUB.envs.splice(i, 1); else PUB.envs.push(v); t.classList.toggle('on', i < 0); refreshPreview(); return; }
+  if (t.dataset.pubrefRm) { PUB.refs = PUB.refs.filter(r => r !== t.dataset.pubrefRm); rerenderPublish(); return; }
+  if (t.dataset.pubreview != null) { PUB.review = !PUB.review; t.classList.toggle('on', PUB.review); t.setAttribute('aria-checked', PUB.review); document.getElementById('p-submit').textContent = PUB.review ? '公開して審査を申請する' : 'インディーズに公開する'; refreshPreview(); return; }
+  if (t.dataset.approve) { decide(t.dataset.approve, 'approved'); return; }
+  if (t.dataset.return) { decide(t.dataset.return, 'returned'); return; }
+  if (t.dataset.request) { const it = byId(t.dataset.request); it.review = { status:'requested', at:isoToday(), note:'' }; REVIEWS[it.id] = { review:it.review, tier:it.tier }; store.set('reviews', REVIEWS); persistPublished(); toast('審査を申請しました'); render(true); return; }
+});
+document.addEventListener('keydown', e => {
+  const sh = document.getElementById('sheet');
+  if (e.key === 'Escape') { closeSheet(); const l = document.getElementById('sq-list'); if (l) l.hidden = true; const r = document.getElementById('p-ref-list'); if (r) r.hidden = true; return; }
+  if (e.key === 'Tab' && !sh.hidden) { const fs = Array.from(sh.querySelectorAll('button,input,select,textarea,[href]')).filter(x => !x.disabled); if (!fs.length) return; const first = fs[0], last = fs[fs.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } return; }
+  if (e.target.id === 'sq') {
+    const l = document.getElementById('sq-list');
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { if (l && !l.hidden) { e.preventDefault(); moveCandidate(l, e.key === 'ArrowDown' ? 1 : -1); } return; }
+    if (e.key === 'Enter') { e.preventDefault(); const on = l && !l.hidden ? l.querySelector('[data-pick].on') : null; if (l) l.hidden = true; if (on) go('item/' + on.dataset.pick); else go('search?q=' + encodeURIComponent(e.target.value)); return; }
+  }
+  if (e.key === 'Enter' && e.target.dataset && e.target.dataset.pubenvNew != null) { e.preventDefault(); const v = e.target.value.trim(); if (v && !PUB.envs.includes(v)) { PUB.envs.push(v); rerenderPublish(); } return; }
+  if (e.key === 'Enter' && e.target.id === 'p-ref') { e.preventDefault(); }
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.id === 'sq') { candidates(el.value, document.getElementById('sq-list'), id => go('item/' + id)); return; }
+  if (el.id === 'q') { const v = el.value; const cur = parse(location.hash).q; const t = cur.tier ? '&tier=' + encodeURIComponent(cur.tier) : ''; replaceRoute('search' + (v ? '?q=' + encodeURIComponent(v) + t : '')); document.getElementById('qres').innerHTML = searchResults(v, { tier:cur.tier }); afterRender(['search'], {}); return; }
+  if (el.id === 'p-ref') { candidates(el.value, document.getElementById('p-ref-list'), id => { if (!PUB.refs.includes(id)) PUB.refs.push(id); el.value = ''; rerenderPublish(); }); return; }
+  if (el.dataset.pub) { PUB[el.dataset.pub] = el.value; refreshPreview(); const c = el.parentElement.querySelector('.cnt'); if (c) c.textContent = el.value.length + '/' + el.maxLength; return; }
+  if (el.dataset.pubfile != null) { PUB.files = Array.from(el.files).map(f => f.name); el.parentElement.querySelector('.fl').textContent = PUB.files.join('、'); refreshPreview(); return; }
+});
+document.addEventListener('change', e => { const el = e.target; if ('sort' in el.dataset) setQuery('sort=' + el.value); if (el.dataset.pub === 'unit') { PUB.unit = el.value; refreshPreview(); } if (el.dataset.pub === 'rdept') PUB.rdept = el.value; });
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'pubform') return; e.preventDefault();
+  const m = pubMissing(), box = document.getElementById('p-missing');
+  if (m.length) { box.hidden = false; box.textContent = '未入力の項目: ' + m.join('、'); const tgt = { '名前':'#p-name', 'カテゴリー':'[data-pubshelf]', '金額':'#p-amount', '収入の計上部署':'#p-rdept' }[m[0]]; const el = tgt && document.querySelector(tgt); if (el) { el.scrollIntoView({ block:'center', behavior:reduced() ? 'auto' : 'smooth' }); el.focus({ preventScroll:true }); } else box.scrollIntoView({ block:'center', behavior:reduced() ? 'auto' : 'smooth' }); return; }
+  const it = pubPreviewItem(); it.id = 'u-' + Date.now().toString(36); it.name = PUB.name.trim(); it.tagline = PUB.tagline.trim(); it.summary = PUB.summary.trim(); it.description = PUB.description.trim(); it.version = '1.0'; it.features = [];
+  it.review = PUB.review ? { status:'requested', at:isoToday(), note:'' } : { status:'none' };
+  ITEMS.push(it); persistPublished();
+  Object.assign(PUB, { name:'', tagline:'', summary:'', description:'', shelf:'', price:'free', amount:'', rdept:ME.dept, envs:[], refs:[], files:[], review:false });
+  go('item/' + it.id); toast(it.review.status === 'requested' ? '公開し、審査を申請しました' : 'インディーズに公開しました');
+});
+function persistPublished(){ store.set('published', ITEMS.filter(i => /^u-/.test(i.id))); }
+function refreshPreview(){ const p = document.getElementById('p-prev'); if (p) p.innerHTML = pubPreview(); }
+function rerenderPublish(){ const y = window.scrollY; const a = document.activeElement && document.activeElement.id; document.getElementById('page').innerHTML = pagePublish(); observe(); window.scrollTo(0, y); if (a) { const el = document.getElementById(a); if (el) el.focus(); } }
+function decide(id, status){
+  const it = byId(id); const note = (document.getElementById('rv-note') || {}).value || '';
+  if (status === 'returned' && !note.trim()) return;
+  it.review = { status:status, by:'審査担当者', at:isoToday(), note:note.trim() }; if (status === 'approved') it.tier = 'official';
+  REVIEWS[id] = { review:it.review, tier:it.tier }; store.set('reviews', REVIEWS); persistPublished();
+  toast(status === 'approved' ? '「' + it.name + '」を承認し、オフィシャルに移しました' : '「' + it.name + '」を作成者に差し戻しました');
+  go('review');
+}
+document.addEventListener('focusout', e => { if (e.target.id === 'sq') setTimeout(() => { const l = document.getElementById('sq-list'); if (l && !l.matches(':hover')) l.hidden = true; }, 150); });
+// 最初の履歴にも hash を持たせる（戻るで最初の項目に戻ったとき、画面が hash と合うように）
+if (!location.hash || location.hash === '#' || location.hash === '#/') history.replaceState(null, '', '#/' + (ss.get('store.route') || 'home'));
+render();
+})();
+</script>
+</body>
+</html>
