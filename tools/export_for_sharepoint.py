@@ -1,11 +1,11 @@
-"""試作の catalog.json と categories.json を、SharePoint のリストに取り込める CSV に書き出す。
+"""試作の catalog.json と categories.json を、SharePoint のリストに取り込める CSV にエクスポートする。
 
 使い方（commons-store のフォルダで）:
 
     python3 tools/export_for_sharepoint.py
 
-書き出し先は docs/backend/import/。標準ライブラリだけで動く。
-会社の PC に Python が無くても使えるよう、書き出した CSV はリポジトリに置いておく。
+出力先は docs/backend/import/。標準ライブラリだけで動く。
+会社の PC に Python が無くても使えるよう、エクスポートした CSV はリポジトリに置いておく。
 
 - 列の名前は、リストの列の内部名（半角英字）にそろえる。表示名は日本語に後から変える。
   列の意味と型は docs/backend/data-model.md が正本。
@@ -14,11 +14,11 @@
 - 配列（features・environments・references・files・signals、特集の items）は、
   1 つのセルに改行でつないで入れる（リストの「複数行テキスト」の列に 1 行 1 つ）。
 - 文字コードは BOM 付きの UTF-8。Excel で開いても日本語が化けないようにするため。
-- 書き出す前に build_store.py の validate() を通す。直すところがあれば止まる。
-- 書き出した後、CSV から catalog.json と categories.json の形に組み立て直し、
-  元と比べる（往復の確かめ）。違ってよいのは、決めてある例外だけ。
+- エクスポートする前に build_store.py の validate() で確かめる。直すところがあれば止まる。
+- エクスポートした後、CSV から catalog.json と categories.json の形に組み立て直し、
+  元と比べる（元の形に戻せるかの確認）。違ってよいのは、決めてある例外だけ。
 
-見本のデータは架空。本番のサイトには取り込まない。
+サンプルデータは架空。本番のサイトには取り込まない。
 """
 
 from __future__ import annotations
@@ -160,7 +160,7 @@ def dept_codes(catalog: dict, categories: dict) -> dict[str, str]:
     """部署の名前 → 部署コード。
 
     categories.json の departments（試作の画面が申し込みと公開で使う一覧）があればそれを使う。
-    無ければ見本として、作成者の部署の名前に出てきた順で D001 から振る（架空）。
+    無ければサンプルとして、作成者の部署の名前に出てきた順で D001 から振る（架空）。
     """
     if categories.get("departments"):
         return {d["name"]: d["code"] for d in categories["departments"]}
@@ -193,7 +193,7 @@ def item_row(it: dict, codes: dict[str, str]) -> dict[str, str]:
         "PriceType": price.get("type", "free"),
         "PriceAmount": str(price.get("amount", "")) if paid else "",
         "PriceUnit": price.get("unit", "") if paid else "",
-        # 見本の既定: 収入を計上する部署は作成者の部署（架空のコード）。
+        # 既定値: 収入を計上する部署は作成者の部署（サンプルデータでは架空のコード）。
         "RevenueDeptCode": price.get("revenue_dept", codes[it["maker"]["org"]])
         if paid
         else "",
@@ -217,7 +217,7 @@ def item_row(it: dict, codes: dict[str, str]) -> dict[str, str]:
 
 
 def row_to_item(r: dict[str, str]) -> dict:
-    """リストの 1 行を catalog.json の 1 件に戻す（書き出しのフローと同じ対応）。"""
+    """リストの 1 行を catalog.json の 1 件に戻す（エクスポートのフローと同じ対応）。"""
     if r["PriceType"] == "paid":
         price: dict = {
             "type": "paid",
@@ -470,7 +470,7 @@ def round_trip(catalog: dict, categories: dict) -> list[str]:
         if back_depts != categories["departments"]:
             unexpected.append("部署の一覧: categories.json の departments と違う")
     for line in expected:
-        print("  例外どおり:", line)
+        print("  想定どおりの違い:", line)
     return unexpected
 
 
@@ -522,16 +522,16 @@ def main() -> int:
     ]
     for p in written:
         n = len(read_csv(p))
-        print(f"{p.relative_to(ROOT)} を書き出した（{n} 行）")
-    print("往復の確かめ（CSV → catalog.json・categories.json の形）:")
+        print(f"{p.relative_to(ROOT)} をエクスポートした（{n} 行）")
+    print("元の形に戻せるかの確認（CSV → catalog.json・categories.json の形）:")
     unexpected = round_trip(catalog, categories)
     check_settings_documented()
     if unexpected:
-        print("決めていない違いがあります:", file=sys.stderr)
+        print("想定外の違いがあります:", file=sys.stderr)
         for u in unexpected:
             print("  -", u, file=sys.stderr)
         return 1
-    print("  決めていない違いは無い")
+    print("  想定外の違いは無い")
     return 0
 
 

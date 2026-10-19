@@ -4,8 +4,8 @@
 
     python3 build_store.py
 
-`catalog.json` と `categories.json` を `store-template.html` の印に差し込み、
-`store.html` を書き出す。ストアの画面はブラウザで開くだけで動き、置き場
+`catalog.json` と `categories.json` を `store-template.html` の差し込み位置に入れ、
+`store.html` を作る。ストアの画面はブラウザで開くだけで動き、置き場
 （共有ドライブ・SharePoint のライブラリ・GitHub）を選ばない。
 """
 
@@ -25,7 +25,7 @@ MARKS = {
 
 
 def embed(text: str) -> str:
-    """<script> の中に置くので、閉じタグに読まれる並びだけ逃がす。"""
+    """<script> の中に置くので、閉じタグと解釈される「</」だけをエスケープする。"""
     return text.replace("</", "<\\/")
 
 
@@ -43,10 +43,12 @@ def validate(catalog: dict, categories: dict) -> list[str]:
             problems.append(f"{ident}: id が重複")
         ids.add(ident)
         if it.get("tier") not in tiers:
-            problems.append(f"{ident}: tier が不明 ({it.get('tier')})")
+            problems.append(
+                f"{ident}: tier が categories.json に無い ({it.get('tier')})"
+            )
         if (it.get("kind"), it.get("shelf")) not in shelves:
             problems.append(
-                f"{ident}: 大カテゴリー・中カテゴリーが不明 ({it.get('kind')}/{it.get('shelf')})"
+                f"{ident}: 大カテゴリーと中カテゴリーの組み合わせが categories.json に無い ({it.get('kind')}/{it.get('shelf')})"
             )
         price = it.get("price", {})
         if price.get("type") not in ("free", "paid"):
@@ -62,7 +64,7 @@ def validate(catalog: dict, categories: dict) -> list[str]:
             )
         for s in it.get("signals", []):
             if s not in signals:
-                problems.append(f"{ident}: 目印が不明 ({s})")
+                problems.append(f"{ident}: 目印が categories.json に無い ({s})")
     for it in catalog["items"]:
         for ref in it.get("references", []):
             if ref not in ids:
@@ -75,7 +77,9 @@ def validate(catalog: dict, categories: dict) -> list[str]:
         if f.get("kind") not in ("story", "collection"):
             problems.append(f"{fid}: 特集の kind は story か collection")
         if f.get("tier") not in tiers:
-            problems.append(f"{fid}: 特集の tier が不明 ({f.get('tier')})")
+            problems.append(
+                f"{fid}: 特集の tier が categories.json に無い ({f.get('tier')})"
+            )
         if not isinstance(f.get("hue"), int):
             problems.append(f"{fid}: 特集には hue（0〜359 の整数）が要る")
         for ref in f.get("items", []):
@@ -97,12 +101,12 @@ def main() -> int:
         return 1
     for mark, text in loaded.items():
         if mark not in html:
-            print(f"雛形に印 {mark} が無い", file=sys.stderr)
+            print(f"雛形に差し込み位置 {mark} が無い", file=sys.stderr)
             return 1
         html = html.replace(mark, embed(text))
     OUT.write_text(html, encoding="utf-8")
     n = len(catalog["items"])
-    print(f"{OUT.name} を書き出した（{n} 件）")
+    print(f"{OUT.name} を作った（{n} 件）")
     return 0
 
 
